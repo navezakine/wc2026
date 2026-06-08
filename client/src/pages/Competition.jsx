@@ -216,7 +216,7 @@ export default function Competition() {
   return (
     <div dir="rtl" className="mx-auto max-w-2xl">
       {/* Winner banner (after announcement) */}
-      {info?.winner && (
+      {info?.winner && new Date() >= new Date(info.endsAt || '2026-07-19T22:00:00+03:00') && (
         <div className="mb-5 rounded-3xl border border-[#f5c518] bg-gradient-to-bl from-[#f5c518]/25 to-[#1a3a2a] p-5 text-center shadow-2xl animate-fade-up">
           <div className="text-3xl">🏆</div>
           <h2 className="mt-1 text-xl font-black text-[#f5c518]">
@@ -284,7 +284,7 @@ export default function Competition() {
           <div className="mb-2 flex items-center gap-1.5 text-xs font-bold text-emerald-100/60">
             <ClockIcon width={14} height={14} /> זמן לסיום הטורניר
           </div>
-          <div className="grid grid-cols-4 gap-1.5">
+          <div className="grid grid-cols-4 gap-1.5" dir="ltr">
             <CountdownCell value={cd.days} label="ימים" />
             <CountdownCell value={cd.hours} label="שעות" />
             <CountdownCell value={cd.minutes} label="דקות" />
