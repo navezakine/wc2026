@@ -196,16 +196,13 @@ export default function Sidebar({ open, onClose }) {
         <div className="border-t border-white/10 p-4 space-y-2">
           <button
             onClick={handleShare}
-            className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-sm font-bold cursor-pointer transition-all duration-300
+            className={`flex w-full items-center justify-center gap-3 rounded-xl px-4 py-3 text-sm font-black cursor-pointer transition-all duration-300
               ${shared
-                ? 'border-emerald-400/50 bg-emerald-500/10 text-emerald-300'
-                : 'border-gold/40 bg-gold/10 text-gold hover:bg-gold/20 animate-pulse-glow'
+                ? 'bg-emerald-500 text-white shadow-lg'
+                : 'bg-gradient-to-l from-gold to-gold-light text-night shadow-glow animate-pulse-glow hover:from-gold-dark hover:to-gold'
               }`}
           >
-            <span className={`grid h-9 w-9 place-items-center rounded-lg transition-colors
-              ${shared ? 'bg-emerald-500/20 text-emerald-300' : 'bg-gold/20 text-gold'}`}>
-              <ShareIcon />
-            </span>
+            <ShareIcon width={18} height={18} className={shared ? '' : 'animate-bounce'} />
             {shared ? '✓ הקישור הועתק!' : 'הזמינו חברים'}
           </button>
 
