@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Logo from '../components/Logo.jsx'
 import { useSession } from '../lib/session.jsx'
@@ -6,8 +6,13 @@ import { api } from '../lib/api.js'
 import { BallIcon } from '../lib/icons.jsx'
 
 export default function Login() {
-  const { login } = useSession()
+  const { login, isLoggedIn } = useSession()
   const navigate = useNavigate()
+
+  // Navigate only after state has actually updated
+  useEffect(() => {
+    if (isLoggedIn) navigate('/app', { replace: true })
+  }, [isLoggedIn, navigate])
 
   const [phone, setPhone] = useState('')
   const [remember, setRemember] = useState(true)
@@ -23,7 +28,7 @@ export default function Login() {
       const results = await api.login(phone.trim())
       if (results.length === 1) {
         login(results[0], remember)
-        navigate('/app')
+        // navigate happens via the isLoggedIn useEffect above
       } else {
         setAccounts(results)
       }
@@ -36,7 +41,7 @@ export default function Login() {
 
   function selectAccount(account) {
     login(account, remember)
-    navigate('/app')
+    // navigate happens via the isLoggedIn useEffect above
   }
 
   return (
