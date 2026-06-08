@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useSession } from '../lib/session.jsx'
 import { useAsync } from '../lib/useAsync.js'
 import { api, whatsappShareUrl } from '../lib/api.js'
@@ -140,7 +141,9 @@ export default function Leaderboard() {
               <th className="p-4 text-center font-bold">
                 <span className="inline-flex items-center gap-1"><BallIcon width={14} height={14} /> ניחושים</span>
               </th>
-              <th className="p-4 text-left font-bold">נקודות</th>
+              <th className="p-4 text-left font-bold">
+                <Link to="/scoring" className="hover:text-gold transition-colors">נקודות ↗</Link>
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { api, whatsappShareUrl } from '../lib/api.js'
 import { UsersIcon, TrophyIcon } from '../lib/icons.jsx'
 
@@ -43,7 +44,8 @@ export default function ReferralWidget({ variant = 'app' }) {
             הזמנת <span className="num">{data.invited}</span> חברים
           </div>
           <div className="text-slate-300">
-            קיבלת <span className="num">{data.points}</span> נקודות הזמנות
+            קיבלת <span className="num">{data.points}</span> נקודות הזמנות{' '}
+            <Link to="/scoring" className="text-gold/60 hover:text-gold text-xs font-bold">(?)</Link>
           </div>
         </div>
       </div>

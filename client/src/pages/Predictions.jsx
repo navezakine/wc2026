@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useSession } from '../lib/session.jsx'
 import { useAsync } from '../lib/useAsync.js'
 import { api } from '../lib/api.js'
@@ -46,7 +47,10 @@ export default function Predictions() {
         </div>
         <div className="text-left">
           <div className="num text-3xl font-black text-gold">{total}</div>
-          <div className="text-xs font-bold text-slate-400">נקודות שנצברו</div>
+          <div className="flex items-center justify-end gap-1 text-xs font-bold text-slate-400">
+            נקודות שנצברו
+            <Link to="/scoring" className="text-gold/60 hover:text-gold" title="איך מחשבים נקודות?">?</Link>
+          </div>
         </div>
       </div>
 
@@ -63,7 +67,9 @@ export default function Predictions() {
                 <th className="p-4 font-bold">תאריך</th>
                 <th className="p-4 text-center font-bold">הניחוש שלי</th>
                 <th className="p-4 text-center font-bold">תוצאה</th>
-                <th className="p-4 text-center font-bold">נקודות</th>
+                <th className="p-4 text-center font-bold">
+                  <Link to="/scoring" className="hover:text-gold transition-colors">נקודות ↗</Link>
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">

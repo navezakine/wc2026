@@ -7,6 +7,7 @@ import {
   TargetIcon,
   ChartIcon,
   TrophyIcon,
+  StarIcon,
   LogoutIcon,
   CloseIcon,
 } from '../lib/icons.jsx'
@@ -17,6 +18,7 @@ const links = [
   { to: '/app/predictions', label: 'הניחושים שלי', icon: TargetIcon },
   { to: '/app/leaderboard', label: 'טבלת הליגה', icon: ChartIcon },
   { to: '/competition', label: 'תחרות הפרסים', icon: TrophyIcon },
+  { to: '/scoring', label: 'מערכת הניקוד', icon: StarIcon },
 ]
 
 export default function Sidebar({ open, onClose }) {

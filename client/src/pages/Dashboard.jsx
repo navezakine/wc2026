@@ -37,7 +37,7 @@ export default function Dashboard() {
   const top = lb.slice(0, 5)
 
   const stats = [
-    { icon: TrophyIcon, label: 'ניקוד כולל', value: myRow?.total_points ?? 0, suffix: 'נק׳', tone: 'text-gold bg-gold/15' },
+    { icon: TrophyIcon, label: 'ניקוד כולל', value: myRow?.total_points ?? 0, suffix: 'נק׳', tone: 'text-gold bg-gold/15', scoringLink: true },
     { icon: MedalIcon, label: 'דירוג בקבוצה', value: myRow ? `#${myRow.rank}` : '—', tone: 'text-team-light bg-team/15' },
     { icon: TargetIcon, label: 'ניחושים מדויקים', value: myRow?.exact_scores ?? 0, tone: 'text-emerald-300 bg-emerald-500/15' },
     { icon: BallIcon, label: 'סה״כ ניחושים', value: myRow?.predictions_count ?? 0, tone: 'text-sky-300 bg-sky-500/15' },
@@ -72,7 +72,7 @@ export default function Dashboard() {
       <UpgradePrompt />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {stats.map(({ icon: Icon, label, value, suffix, tone }) => (
+        {stats.map(({ icon: Icon, label, value, suffix, tone, scoringLink }) => (
           <div key={label} className="glass-card animate-fade-up p-5">
             <span className={`mb-3 grid h-11 w-11 place-items-center rounded-xl ${tone}`}>
               <Icon width={22} height={22} />
@@ -80,7 +80,12 @@ export default function Dashboard() {
             <div className="num text-3xl font-black text-white">
               {value} {suffix && <span className="text-base font-bold text-slate-400">{suffix}</span>}
             </div>
-            <div className="mt-1 text-sm font-medium text-slate-400">{label}</div>
+            <div className="mt-1 flex items-center gap-1.5 text-sm font-medium text-slate-400">
+              {label}
+              {scoringLink && (
+                <Link to="/scoring" className="text-gold/60 hover:text-gold text-xs font-bold" title="איך מחשבים נקודות?">?</Link>
+              )}
+            </div>
           </div>
         ))}
       </div>
