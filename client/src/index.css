@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    /* RTL is set on the <html> element in index.html (dir="rtl" lang="he") */
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-night text-slate-100 font-sans antialiased;
+    background-image: var(--tw-bg-stadium, none);
+    min-height: 100vh;
+  }
+
+  /* Headings use the display font */
+  h1, h2, h3, h4 {
+    @apply font-display font-bold tracking-tight;
+  }
+
+  /* Logical-property friendly: keep numbers LTR inside RTL text */
+  .num {
+    direction: ltr;
+    unicode-bidi: isolate;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply rounded-2xl border border-white/10 bg-night-800/70 backdrop-blur-xl shadow-card;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold
+           transition-colors duration-200 cursor-pointer
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-night
+           disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-primary {
+    @apply btn bg-gradient-to-l from-team to-team-light text-white hover:from-team-dark hover:to-team;
+  }
+
+  .btn-gold {
+    @apply btn bg-gradient-to-l from-gold to-gold-light text-night hover:from-gold-dark hover:to-gold;
+  }
+
+  .btn-ghost {
+    @apply btn border border-white/15 bg-white/5 text-slate-100 hover:bg-white/10;
+  }
+
+  .field {
+    @apply w-full rounded-xl border border-white/10 bg-night-700/60 px-4 py-3 text-right text-slate-100
+           placeholder:text-slate-400 outline-none transition
+           focus:border-gold/60 focus:ring-2 focus:ring-gold/30;
+  }
+
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-slate-300;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold;
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Custom scrollbar to match the stadium-night theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0b1020;
+}
+::-webkit-scrollbar-thumb {
+  background: #27325f;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a4a85;
+}

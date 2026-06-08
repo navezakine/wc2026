@@ -1,0 +1,16 @@
+{
+  "name": "world-cup-prediction-club",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ליגת הניחושים - מונדיאל 2026 | World Cup 2026 Prediction Club",
+  "scripts": {
+    "install:all": "npm --prefix client install && npm --prefix server install",
+    "dev": "concurrently -n client,server -c magenta,cyan \"npm --prefix client run dev\" \"npm --prefix server run dev\"",
+    "dev:client": "npm --prefix client run dev",
+    "dev:server": "npm --prefix server run dev",
+    "build": "npm --prefix client run build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
