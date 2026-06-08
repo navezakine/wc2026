@@ -4,7 +4,7 @@
   "private": true,
   "description": "ליגת הניחושים - מונדיאל 2026 | World Cup 2026 Prediction Club",
   "scripts": {
-    "install:all": "npm --prefix client install && npm --prefix server install",
+    "install:all": "npm --prefix client install --include=dev && npm --prefix server install",
     "dev": "concurrently -n client,server -c magenta,cyan \"npm --prefix client run dev\" \"npm --prefix server run dev\"",
     "dev:client": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev",
