@@ -16,8 +16,12 @@ services:
         sync: false
       - key: FOOTBALL_DATA_API_KEY
         sync: false
+      # Public site URL — used for CORS and for invite/referral/QR links.
+      # Same origin in this monolith deploy; update both when a custom domain is ready.
       - key: CLIENT_ORIGIN
-        sync: false
+        value: https://wc2026-j5e5.onrender.com
+      - key: APP_BASE_URL
+        value: https://wc2026-j5e5.onrender.com
       - key: TWILIO_ACCOUNT_SID
         sync: false
       - key: TWILIO_AUTH_TOKEN

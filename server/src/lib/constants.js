@@ -1,5 +1,6 @@
 // Public base URL used in invite/referral links and QR codes.
-export const APP_BASE_URL = process.env.APP_BASE_URL || 'https://hamondial.com'
+// Current live deployment on Render; override via APP_BASE_URL env when a custom domain is ready.
+export const APP_BASE_URL = process.env.APP_BASE_URL || 'https://wc2026-j5e5.onrender.com'
 
 // Global competition settings
 export const COMPETITION_PRIZE = process.env.COMPETITION_PRIZE || 'כרטיס מתנה 500 שקל לאמזון'
