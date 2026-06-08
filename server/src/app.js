@@ -1,6 +1,8 @@
 import express from 'express'
 import cors from 'cors'
 import rateLimit from 'express-rate-limit'
+import { fileURLToPath } from 'url'
+import path from 'path'
 import matchesRouter from './routes/matches.js'
 import leaderboardRouter from './routes/leaderboard.js'
 import predictionsRouter from './routes/predictions.js'
@@ -8,6 +10,9 @@ import groupsRouter from './routes/groups.js'
 import competitionRouter from './routes/competition.js'
 import adminRouter from './routes/admin.js'
 import { isSupabaseConfigured, usingServiceRole } from './config/supabase.js'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const clientDist = path.join(__dirname, '../../..', 'client/dist')
 
 export function createApp() {
   const app = express()
@@ -57,8 +62,12 @@ export function createApp() {
   app.use('/api/competition', competitionRouter)
   app.use('/api/admin', adminRouter)
 
-  // 404
+  // 404 for unknown API routes
   app.use('/api', (_req, res) => res.status(404).send('הנתיב לא נמצא'))
+
+  // Serve built client (production)
+  app.use(express.static(clientDist))
+  app.get('*', (_req, res) => res.sendFile(path.join(clientDist, 'index.html')))
 
   // Error handler (Hebrew messages)
   // eslint-disable-next-line no-unused-vars
