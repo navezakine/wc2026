@@ -13,6 +13,7 @@ import {
   LogoutIcon,
   CloseIcon,
   UsersIcon,
+  ShareIcon,
 } from '../lib/icons.jsx'
 
 const links = [
@@ -30,6 +31,20 @@ export default function Sidebar({ open, onClose }) {
   const { logout, currentGroup, allMemberships, switchMembership } = useSession()
   const navigate = useNavigate()
   const [switcherOpen, setSwitcherOpen] = useState(false)
+  const [shared, setShared] = useState(false)
+
+  async function handleShare() {
+    const url = `${window.location.origin}/join/${currentGroup?.invite_code}`
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'ליגת הניחושים', text: 'הצטרפו לליגת הניחושים שלנו! 🏆', url })
+      } else {
+        await navigator.clipboard.writeText(url)
+        setShared(true)
+        setTimeout(() => setShared(false), 2000)
+      }
+    } catch { /* user cancelled */ }
+  }
   const switcherRef = useRef(null)
 
   useEffect(() => {
@@ -178,7 +193,22 @@ export default function Sidebar({ open, onClose }) {
           ))}
         </nav>
 
-        <div className="border-t border-white/10 p-4">
+        <div className="border-t border-white/10 p-4 space-y-2">
+          <button
+            onClick={handleShare}
+            className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-sm font-bold cursor-pointer transition-all duration-300
+              ${shared
+                ? 'border-emerald-400/50 bg-emerald-500/10 text-emerald-300'
+                : 'border-gold/40 bg-gold/10 text-gold hover:bg-gold/20 animate-pulse-glow'
+              }`}
+          >
+            <span className={`grid h-9 w-9 place-items-center rounded-lg transition-colors
+              ${shared ? 'bg-emerald-500/20 text-emerald-300' : 'bg-gold/20 text-gold'}`}>
+              <ShareIcon />
+            </span>
+            {shared ? '✓ הקישור הועתק!' : 'הזמינו חברים'}
+          </button>
+
           <button
             onClick={handleLogout}
             className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/5 hover:text-white cursor-pointer"
