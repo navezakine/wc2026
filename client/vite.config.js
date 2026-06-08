@@ -5,7 +5,7 @@ export default defineConfig(async ({ mode }) => {
   const plugins = [react()]
 
   if (mode === 'development') {
-    const { inspectorServer } = await import('react-dev-inspector/plugins/vite')
+    const { inspectorServer } = await import('react-dev-inspector/lib/plugins/vite')
     plugins.push(inspectorServer())
   }
 
