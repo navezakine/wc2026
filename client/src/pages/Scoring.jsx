@@ -86,6 +86,33 @@ function RuleCard({ points, label, desc, icon: Icon, highlight }) {
   )
 }
 
+function ScoringPodium() {
+  const steps = [
+    { pts: 5,  label: 'מנצחת נכונה', place: 2, h: 'h-24', medal: 'bg-slate-300 text-night' },
+    { pts: 10, label: 'תוצאה מדויקת', place: 1, h: 'h-32', medal: 'bg-gold text-night' },
+    { pts: 2,  label: 'מלך השערים',  place: 3, h: 'h-20', medal: 'bg-amber-700 text-white' },
+  ]
+  return (
+    <div className="glass-card flex items-end justify-center gap-3 p-6 sm:gap-6 sm:p-8">
+      {steps.map(({ pts, label, place, h, medal }) => (
+        <div key={place} className="flex w-24 flex-col items-center sm:w-32">
+          {place === 1 && <TrophyIcon className="mb-1 text-gold" width={24} height={24} />}
+          <div className={`num grid h-14 w-14 place-items-center rounded-full bg-gradient-to-bl from-team to-gold text-2xl font-black text-white sm:h-16 sm:w-16`}>
+            {pts}
+          </div>
+          <div className="mt-2 text-center text-xs font-bold text-slate-300 leading-tight">{label}</div>
+          <div className="text-xs text-slate-500">נק׳</div>
+          <div className={`mt-2 flex w-full ${h} items-start justify-center rounded-t-xl bg-gradient-to-t from-white/5 to-white/10 pt-2`}>
+            <span className={`num grid h-9 w-9 place-items-center rounded-lg text-base font-black ${medal}`}>
+              {place}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function Section({ title, subtitle, rules, accent }) {
   return (
     <div className="glass-card overflow-hidden">
@@ -121,6 +148,8 @@ export default function Scoring() {
           </div>
           <p className="mt-3 text-xs text-slate-500">נקודות ניחוש אין להן תקרה — נחשו יותר ודייקו יותר</p>
         </div>
+
+        <ScoringPodium />
 
         <div className="space-y-4">
           <Section
