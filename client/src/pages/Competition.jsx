@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { api } from '../lib/api.js'
+import { api, whatsappShareUrl } from '../lib/api.js'
 import { GoldButton, GhostButton } from '../components/green.jsx'
-import ReferralWidget from '../components/ReferralWidget.jsx'
-import { TrophyIcon, UsersIcon, ClockIcon } from '../lib/icons.jsx'
+import { useSession } from '../lib/session.jsx'
+import { TrophyIcon, UsersIcon, ClockIcon, CloseIcon } from '../lib/icons.jsx'
 
 function useCountdown(endsAt) {
   const [now, setNow] = useState(Date.now())
@@ -29,10 +29,107 @@ function CountdownCell({ value, label }) {
   )
 }
 
+function InviteModal({ stats, onClose }) {
+  const { currentGroup } = useSession()
+  const [copiedRef, setCopiedRef] = useState(false)
+  const [copiedGroup, setCopiedGroup] = useState(false)
+
+  const groupLink = currentGroup?.invite_code
+    ? `${window.location.origin}/join/${currentGroup.invite_code}`
+    : null
+
+  function copy(text, setCopied) {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm sm:items-center"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-sm rounded-t-3xl border border-[#f5c518]/30 bg-[#0f241a] p-6 sm:rounded-3xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-5 flex items-start justify-between">
+          <div>
+            <h3 className="text-lg font-black text-white">הזמן חבר להצטרף</h3>
+            <p className="mt-1 text-sm text-emerald-100/60">
+              כדי להיכנס לתחרות צריך שלפחות חבר אחד יצטרף דרכך
+            </p>
+          </div>
+          <button onClick={onClose} className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 cursor-pointer">
+            <CloseIcon />
+          </button>
+        </div>
+
+        <div className="space-y-3">
+          {/* Group invite */}
+          {groupLink && (
+            <div className="rounded-2xl border border-[#f5c518]/20 bg-[#1a3a2a]/80 p-4">
+              <div className="mb-2 text-sm font-bold text-white">הזמן לקבוצה שלך</div>
+              <p className="mb-3 text-xs text-emerald-100/60">
+                החבר יצטרף ישירות לקבוצה <span className="font-bold text-white">{currentGroup?.name}</span> ויצבור נקודות יחד איתך
+              </p>
+              <div className="flex gap-2">
+                <a
+                  href={whatsappShareUrl(groupLink)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 rounded-xl bg-[#25D366] px-3 py-2.5 text-center text-sm font-extrabold text-white hover:bg-[#1ebe5b]"
+                >
+                  שלח בוואטסאפ
+                </a>
+                <button
+                  onClick={() => copy(groupLink, setCopiedGroup)}
+                  className="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm font-bold text-slate-300 hover:bg-white/10 cursor-pointer"
+                >
+                  {copiedGroup ? '✓' : 'העתק'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Referral-only link */}
+          {stats?.referralLink && (
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <div className="mb-2 text-sm font-bold text-white">הזמנה כללית</div>
+              <p className="mb-3 text-xs text-emerald-100/60">
+                החבר יצטרף לאפליקציה בלי להיות בקבוצה שלך — עדיין נחשב להכשרה לתחרות
+              </p>
+              <div className="flex gap-2">
+                <a
+                  href={whatsappShareUrl(stats.referralLink)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 rounded-xl bg-[#25D366] px-3 py-2.5 text-center text-sm font-extrabold text-white hover:bg-[#1ebe5b]"
+                >
+                  שלח בוואטסאפ
+                </a>
+                <button
+                  onClick={() => copy(stats.referralLink, setCopiedRef)}
+                  className="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm font-bold text-slate-300 hover:bg-white/10 cursor-pointer"
+                >
+                  {copiedRef ? '✓' : 'העתק'}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function EntryFlow({ onEntered }) {
-  const memberId = localStorage.getItem('wc_member')
+  const { memberId } = useSession()
   const [stats, setStats] = useState(null)
+  const [showModal, setShowModal] = useState(false)
   const [consent, setConsent] = useState(false)
+  const [showConsent, setShowConsent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -40,33 +137,12 @@ function EntryFlow({ onEntered }) {
     if (memberId) api.getReferralStats(memberId).then(setStats).catch(() => {})
   }, [memberId])
 
-  if (!memberId) {
-    return (
-      <div className="rounded-2xl border border-[#f5c518]/20 bg-[#1a3a2a]/70 p-5 text-center">
-        <p className="mb-3 font-bold text-white">כדי להשתתף בתחרות יש להצטרף לקבוצה</p>
-        <Link to="/create">
-          <GoldButton type="button">צור קבוצה</GoldButton>
-        </Link>
-      </div>
-    )
-  }
   if (!stats) return null
 
   if (stats.competitionEntered) {
     return (
       <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-5 text-center font-extrabold text-emerald-300">
         אתה כבר בתחרות! 🎯 בהצלחה
-      </div>
-    )
-  }
-
-  if (!stats.eligibleForCompetition) {
-    return (
-      <div className="space-y-4">
-        <div className="rounded-2xl border border-[#f5c518]/30 bg-[#f5c518]/10 p-4 text-center font-bold text-[#f5c518]">
-          הזמן לפחות חבר אחד כדי להיכנס לתחרות
-        </div>
-        <ReferralWidget variant="green" />
       </div>
     )
   }
@@ -87,21 +163,39 @@ function EntryFlow({ onEntered }) {
   }
 
   return (
-    <div className="space-y-4 rounded-2xl border border-[#f5c518]/20 bg-[#1a3a2a]/80 p-5">
-      <label className="flex cursor-pointer items-start gap-3 text-right text-sm text-emerald-100/90">
-        <input
-          type="checkbox"
-          checked={consent}
-          onChange={(e) => setConsent(e.target.checked)}
-          className="mt-1 h-5 w-5 shrink-0 accent-[#f5c518]"
-        />
-        <span>אני מאשר/ת שאני בן/בת 18 ומעלה ומסכים/ה לתקנון התחרות</span>
-      </label>
-      {error && <p className="rounded-lg bg-red-500/15 px-3 py-2 text-sm font-bold text-red-300">{error}</p>}
-      <GoldButton type="button" onClick={enter} disabled={!consent || loading}>
-        {loading ? 'נכנס לתחרות…' : 'הצטרף לתחרות'}
-      </GoldButton>
-    </div>
+    <>
+      {!showConsent ? (
+        <div className="text-center">
+          <GoldButton
+            type="button"
+            onClick={() => {
+              if (!stats.eligibleForCompetition) setShowModal(true)
+              else setShowConsent(true)
+            }}
+          >
+            הצטרף לתחרות הפרסים
+          </GoldButton>
+        </div>
+      ) : (
+        <div className="space-y-4 rounded-2xl border border-[#f5c518]/20 bg-[#1a3a2a]/80 p-5">
+          <label className="flex cursor-pointer items-start gap-3 text-right text-sm text-emerald-100/90">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              className="mt-1 h-5 w-5 shrink-0 accent-[#f5c518]"
+            />
+            <span>אני מאשר/ת שאני בן/בת 18 ומעלה ומסכים/ה לתקנון התחרות</span>
+          </label>
+          {error && <p className="rounded-lg bg-red-500/15 px-3 py-2 text-sm font-bold text-red-300">{error}</p>}
+          <GoldButton type="button" onClick={enter} disabled={!consent || loading}>
+            {loading ? 'נכנס לתחרות…' : 'אישור והצטרפות'}
+          </GoldButton>
+        </div>
+      )}
+
+      {showModal && <InviteModal stats={stats} onClose={() => setShowModal(false)} />}
+    </>
   )
 }
 
