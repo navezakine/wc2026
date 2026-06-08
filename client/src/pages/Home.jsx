@@ -7,7 +7,7 @@ import { scoringRules } from '../data/demo.js'
 const features = [
   {
     icon: TargetIcon,
-    title: 'נחשו כל משחק',
+    title: 'נחשו תוצאות לכל משחק',
     desc: 'הזינו את התוצאה המדויקת לכל משחק במונדיאל וקבלו נקודות על הדיוק שלכם.',
   },
   {
@@ -65,14 +65,14 @@ export default function Home() {
             </h1>
             <p className="mx-auto mt-5 max-w-lg text-lg leading-relaxed text-slate-300 lg:mx-0">
               ליגת הניחושים הכי לוהטת של מונדיאל 2026. נחשו תוצאות, צברו נקודות,
-              והוכיחו לכולם מי באמת מבין בכדורגל.
+              והתחרו מול חברים.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
               <Link to="/create" className="btn-gold px-7 py-3 text-base">
                 צור קבוצה
               </Link>
               <Link to="/app" className="btn-primary px-7 py-3 text-base">
-                הצטרף לתחרות הגלובלית
+                אליפות הניחושים הישראלית
               </Link>
               <Link to="/how-to-play" className="btn-ghost px-7 py-3 text-base">
                 איך זה עובד?
@@ -142,6 +142,41 @@ export default function Home() {
               <p className="mt-2 text-sm leading-relaxed text-slate-400">{desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Install CTA */}
+      <section className="mx-auto max-w-6xl px-4 pb-4 sm:px-6">
+        <div className="glass-card p-6 sm:p-8">
+          <div className="mb-6 text-center">
+            <span className="text-3xl">📲</span>
+            <h2 className="mt-2 text-2xl font-black text-white">הוסיפו את האפליקציה למסך הבית</h2>
+            <p className="mt-2 text-sm text-slate-300">גישה מהירה בלחיצה אחת — בלי לפתוח דפדפן</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+              <div className="mb-3 flex items-center gap-2">
+                <span className="text-xl">🤖</span>
+                <span className="font-bold text-white">אנדרואיד (Chrome)</span>
+              </div>
+              <ol className="space-y-2 text-sm text-slate-300">
+                <li className="flex gap-2"><span className="num font-black text-gold">1.</span> פתחו את האתר בדפדפן Chrome</li>
+                <li className="flex gap-2"><span className="num font-black text-gold">2.</span> לחצו על ⋮ (שלוש נקודות) בפינה הימנית</li>
+                <li className="flex gap-2"><span className="num font-black text-gold">3.</span> בחרו <strong className="text-white">"הוסף למסך הבית"</strong></li>
+              </ol>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+              <div className="mb-3 flex items-center gap-2">
+                <span className="text-xl">🍎</span>
+                <span className="font-bold text-white">iPhone (Safari)</span>
+              </div>
+              <ol className="space-y-2 text-sm text-slate-300">
+                <li className="flex gap-2"><span className="num font-black text-gold">1.</span> פתחו את האתר בדפדפן Safari</li>
+                <li className="flex gap-2"><span className="num font-black text-gold">2.</span> לחצו על כפתור השיתוף <strong className="text-white">⎙</strong> (בתחתית המסך)</li>
+                <li className="flex gap-2"><span className="num font-black text-gold">3.</span> בחרו <strong className="text-white">"הוסף למסך הבית"</strong></li>
+              </ol>
+            </div>
+          </div>
         </div>
       </section>
 

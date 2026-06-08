@@ -14,6 +14,15 @@ import { TrophyIcon, TargetIcon, MedalIcon, BallIcon } from '../lib/icons.jsx'
 export default function Dashboard() {
   const { currentMember, currentGroup, groupId, memberId, usingDemo } = useSession()
   const [toast, setToast] = useState(null)
+  const [showInstall, setShowInstall] = useState(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(display-mode: standalone)').matches) return false
+    return !localStorage.getItem('wc_install_dismissed')
+  })
+
+  function dismissInstall() {
+    localStorage.setItem('wc_install_dismissed', '1')
+    setShowInstall(false)
+  }
 
   const matchesQ = useAsync(() => api.getMatches(), [], { fallback: demoMatches })
   const lbQ = useAsync(
@@ -68,6 +77,30 @@ export default function Dashboard() {
           לניחוש המשחקים
         </Link>
       </div>
+
+      {showInstall && (
+        <div className="glass-card animate-fade-up relative p-5">
+          <button
+            onClick={dismissInstall}
+            className="absolute left-3 top-3 grid h-7 w-7 place-items-center rounded-full text-slate-400 hover:bg-white/10 hover:text-white"
+            aria-label="סגור"
+          >
+            ✕
+          </button>
+          <div className="mb-3 flex items-center gap-2">
+            <span className="text-2xl">📲</span>
+            <h3 className="font-black text-white">הוסיפו את האפליקציה למסך הבית</h3>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 text-sm text-slate-300">
+            <div className="rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3">
+              <span className="font-bold text-white">🤖 אנדרואיד:</span> Chrome ← ⋮ ← <strong className="text-white">"הוסף למסך הבית"</strong>
+            </div>
+            <div className="rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3">
+              <span className="font-bold text-white">🍎 iPhone:</span> Safari ← כפתור שיתוף ⎙ ← <strong className="text-white">"הוסף למסך הבית"</strong>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Link
         to="/how-to-play"
