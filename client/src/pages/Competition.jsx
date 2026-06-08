@@ -143,6 +143,40 @@ export default function Competition() {
         </div>
       </div>
 
+      {/* How it works */}
+      <div className="mb-5 overflow-hidden rounded-3xl border border-[#f5c518]/20 bg-[#1a3a2a]/80 animate-fade-up">
+        <div className="border-b border-white/10 bg-[#f5c518]/10 px-5 py-3.5">
+          <h2 className="font-black text-white">איך התחרות עובדת?</h2>
+        </div>
+        <div className="grid gap-px bg-white/5 sm:grid-cols-3">
+          {[
+            {
+              icon: UsersIcon,
+              title: 'הזמינו חבר אחד לפחות',
+              desc: 'כדי להיכנס לתחרות, צריך שלפחות חבר אחד שהזמנתם יצטרף לקבוצה.',
+            },
+            {
+              icon: TrophyIcon,
+              title: 'הניחושים קובעים',
+              desc: 'הסקור הסופי שלכם בתחרות הוא סך הנקודות מכל הניחושים — אותם כללים, אותה טבלה.',
+            },
+            {
+              icon: ClockIcon,
+              title: 'הזוכה מוכרז בסוף',
+              desc: 'בסיום המונדיאל (19 ביולי), המשתתף עם הכי הרבה נקודות בתחרות מקבל את הפרס.',
+            },
+          ].map(({ icon: Icon, title, desc }) => (
+            <div key={title} className="flex flex-col gap-2 bg-[#0f241a] p-4">
+              <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#f5c518]/15 text-[#f5c518]">
+                <Icon width={18} height={18} />
+              </span>
+              <div className="font-bold text-white">{title}</div>
+              <div className="text-sm leading-relaxed text-emerald-100/60">{desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Participant counter + countdown */}
       <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex items-center gap-3 rounded-2xl border border-[#f5c518]/20 bg-[#1a3a2a]/70 p-4">
