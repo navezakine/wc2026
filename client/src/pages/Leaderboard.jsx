@@ -1,10 +1,11 @@
+import { useEffect, useState } from 'react'
 import { useSession } from '../lib/session.jsx'
 import { useAsync } from '../lib/useAsync.js'
-import { api } from '../lib/api.js'
+import { api, whatsappShareUrl } from '../lib/api.js'
 import { demoLeaderboard } from '../data/demo.js'
 import Spinner from '../components/Spinner.jsx'
 import DemoBanner from '../components/DemoBanner.jsx'
-import { TrophyIcon, TargetIcon, BallIcon } from '../lib/icons.jsx'
+import { TrophyIcon, TargetIcon, BallIcon, UsersIcon } from '../lib/icons.jsx'
 
 function Podium({ players }) {
   const order = [players[1], players[0], players[2]].filter(Boolean)
@@ -32,6 +33,75 @@ function Podium({ players }) {
   )
 }
 
+function InviteCard({ memberId }) {
+  const [data, setData] = useState(null)
+  const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    if (!memberId) return
+    api.getReferralStats(memberId).then(setData).catch(() => {})
+  }, [memberId])
+
+  if (!data) return null
+
+  function copyLink() {
+    navigator.clipboard.writeText(data.referralLink).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
+  return (
+    <div className="glass-card p-5">
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gold/15 text-gold">
+            <UsersIcon width={18} height={18} />
+          </span>
+          <div>
+            <div className="font-extrabold text-white">הזמן חברים לקבוצה</div>
+            <div className="text-xs text-slate-400">
+              הזמנת <span className="num font-bold text-gold">{data.invited}</span> חברים · צברת{' '}
+              <span className="num font-bold text-gold">{data.points}</span> נקודות הזמנה
+            </div>
+          </div>
+        </div>
+        {!data.capReached && (
+          <div className="text-left text-xs text-slate-500">
+            <span className="num">{data.points}</span>/100
+          </div>
+        )}
+      </div>
+
+      {!data.capReached && (
+        <div className="mb-4 h-2 overflow-hidden rounded-full bg-white/10">
+          <div
+            className="h-full rounded-full bg-gradient-to-l from-gold to-amber-400 transition-all"
+            style={{ width: `${Math.min(100, Math.round((data.points / 100) * 100))}%` }}
+          />
+        </div>
+      )}
+
+      <div className="flex gap-2">
+        <a
+          href={whatsappShareUrl(data.referralLink)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 rounded-xl bg-[#25D366] px-4 py-2.5 text-center text-sm font-extrabold text-white transition hover:bg-[#1ebe5b]"
+        >
+          שלח בוואטסאפ
+        </a>
+        <button
+          onClick={copyLink}
+          className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold text-slate-300 transition hover:bg-white/10 cursor-pointer"
+        >
+          {copied ? '✓ הועתק' : 'העתק קישור'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export default function Leaderboard() {
   const { groupId, memberId, currentGroup, usingDemo } = useSession()
   const lbQ = useAsync(
@@ -55,6 +125,8 @@ export default function Leaderboard() {
       )}
 
       {players.length >= 3 && <Podium players={players} />}
+
+      <InviteCard memberId={memberId} />
 
       <div className="glass-card overflow-x-auto">
         <table className="w-full min-w-[560px] text-right text-sm">

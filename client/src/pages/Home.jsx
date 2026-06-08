@@ -33,9 +33,14 @@ export default function Home() {
       {/* Top nav */}
       <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
         <Logo />
-        <Link to="/app" className="btn-gold">
-          כניסה לליגה
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link to="/create" className="btn-ghost px-4 py-2 text-sm">
+            צור קבוצה
+          </Link>
+          <Link to="/login" className="btn-gold">
+            כניסה לליגה
+          </Link>
+        </div>
       </header>
 
       {/* Hero */}
@@ -74,7 +79,7 @@ export default function Home() {
               </a>
             </div>
 
-            <dl className="mt-10 grid max-w-md grid-cols-3 gap-4 lg:mx-0">
+            <dl className="mt-10 grid max-w-md grid-cols-3 gap-4 mx-auto">
               {[
                 ['48', 'נבחרות'],
                 ['104', 'משחקים'],

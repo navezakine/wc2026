@@ -1,125 +1,240 @@
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { api } from '../lib/api.js'
-import { GreenPage, GreenHeader, Field, GoldButton, GhostButton } from '../components/green.jsx'
+import { useSession } from '../lib/session.jsx'
+import Logo from '../components/Logo.jsx'
+import { UsersIcon } from '../lib/icons.jsx'
 
 export default function Join() {
   const { inviteCode } = useParams()
   const [params] = useSearchParams()
   const ref = params.get('ref') || undefined
   const navigate = useNavigate()
-
-  const [group, setGroup] = useState(null)
-  const [notFound, setNotFound] = useState(false)
-  const [form, setForm] = useState({ fullName: '', phone: '' })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [done, setDone] = useState(null)
-  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
+  const { login, isLoggedIn } = useSession()
 
   useEffect(() => {
-    api
-      .getGroupByInvite(inviteCode)
+    if (isLoggedIn) navigate('/app', { replace: true })
+  }, [isLoggedIn, navigate])
+
+  const [tab, setTab] = useState('signup')
+  const [group, setGroup] = useState(null)
+  const [notFound, setNotFound] = useState(false)
+
+  // Sign-up state
+  const [fullName, setFullName] = useState('')
+  const [signupPhone, setSignupPhone] = useState('')
+  // Sign-in state
+  const [phone, setPhone] = useState('')
+  const [accounts, setAccounts] = useState(null)
+
+  const [remember, setRemember] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    api.getGroupByInvite(inviteCode)
       .then(setGroup)
       .catch(() => setNotFound(true))
   }, [inviteCode])
 
-  async function submit(e) {
+  function switchTab(t) { setTab(t); setError(''); setAccounts(null) }
+
+  async function handleSignUp(e) {
     e.preventDefault()
-    if (!form.fullName.trim()) {
-      setError('יש למלא שם מלא')
-      return
-    }
     setError('')
     setLoading(true)
     try {
-      const res = await api.joinGroup({ inviteCode, ...form, ref })
-      localStorage.setItem('wc_group', res.group.id)
-      localStorage.setItem('wc_member', res.member.id)
-      setDone(res)
+      const res = await api.joinGroup({ inviteCode, fullName: fullName.trim(), phone: signupPhone.trim(), ref })
+      login({ id: res.member.id, group_id: res.group.id }, remember)
     } catch (err) {
-      setError(err.message)
+      setError(err.message || 'שגיאה בהצטרפות')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleSignIn(e) {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      const results = await api.login(phone.trim())
+      if (results.length === 1) {
+        login(results[0], remember)
+      } else {
+        setAccounts(results)
+      }
+    } catch (err) {
+      setError(err.message || 'שגיאה בכניסה')
+    } finally {
       setLoading(false)
     }
   }
 
   if (notFound) {
     return (
-      <GreenPage>
-        <GreenHeader />
-        <div className="rounded-3xl border border-[#f5c518]/20 bg-[#1a3a2a]/80 p-8 text-center animate-fade-up">
+      <div className="min-h-screen bg-night bg-stadium-mesh flex flex-col items-center justify-center px-4">
+        <div className="w-full max-w-sm glass-card p-8 text-center">
           <p className="text-lg font-extrabold text-white">הקבוצה לא נמצאה</p>
-          <p className="mt-2 text-sm text-emerald-100/70">ייתכן שקישור ההזמנה שגוי או שפג תוקפו.</p>
-          <Link to="/create" className="mt-5 inline-block">
-            <GoldButton type="button">צור קבוצה חדשה</GoldButton>
-          </Link>
+          <p className="mt-2 text-sm text-slate-400">ייתכן שקישור ההזמנה שגוי או שפג תוקפו.</p>
+          <Link to="/create" className="btn-gold mt-5 inline-block px-6 py-2.5">צור קבוצה חדשה</Link>
         </div>
-      </GreenPage>
-    )
-  }
-
-  if (done) {
-    return (
-      <GreenPage>
-        <GreenHeader />
-        <div className="rounded-3xl border border-[#f5c518]/20 bg-[#1a3a2a]/80 p-8 text-center animate-fade-up">
-          <div className="text-4xl">🎉</div>
-          <h2 className="mt-3 text-xl font-extrabold text-white">הצטרפת לקבוצה!</h2>
-          <p className="mt-1 text-sm text-emerald-100/70">ברוך הבא ל"{done.group?.name}"</p>
-          {done.upgradePrompt && (
-            <div className="mt-4 rounded-xl border border-[#f5c518]/40 bg-[#f5c518]/10 px-4 py-3 text-sm font-bold text-[#f5c518]">
-              הקבוצה שלך גדלה! שדרג ב-29 שקל כדי להוסיף עוד חברים
-            </div>
-          )}
-          <button onClick={() => navigate('/app')} className="mt-6 w-full">
-            <GoldButton type="button">התחל לנחש ←</GoldButton>
-          </button>
-        </div>
-      </GreenPage>
+      </div>
     )
   }
 
   return (
-    <GreenPage>
-      <GreenHeader subtitle="הוזמנת להצטרף לקבוצת ניחושים" />
-
-      <form
-        onSubmit={submit}
-        className="space-y-4 rounded-3xl border border-[#f5c518]/20 bg-[#1a3a2a]/80 p-6 shadow-2xl backdrop-blur animate-fade-up"
-      >
-        <div className="text-center">
-          <p className="text-sm text-emerald-100/70">הוזמנת לקבוצה</p>
-          <h2 className="text-2xl font-extrabold text-[#f5c518]">{group?.name || '…'}</h2>
-          {group && (
-            <p className="mt-1 text-xs text-emerald-100/50">
-              <span className="num">{group.member_count}</span> חברים בקבוצה
-            </p>
-          )}
+    <div className="min-h-screen bg-night bg-stadium-mesh flex flex-col items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        <div className="mb-8 flex justify-center">
+          <Logo />
         </div>
 
-        <Field label="שם מלא" value={form.fullName} onChange={set('fullName')} placeholder="השם שלך" required />
-        <Field
-          label="מספר טלפון"
-          value={form.phone}
-          onChange={set('phone')}
-          type="tel"
-          inputMode="tel"
-          placeholder="050-0000000"
-        />
+        <div className="glass-card overflow-hidden">
+          {/* Group info banner */}
+          <div className="border-b border-white/10 bg-gradient-to-l from-team/20 to-gold/10 px-6 py-4 text-center">
+            <p className="text-xs font-bold text-slate-400">הוזמנת להצטרף לקבוצה</p>
+            <h2 className="mt-0.5 text-xl font-black text-gold">{group?.name || '…'}</h2>
+            {group && (
+              <p className="mt-1 flex items-center justify-center gap-1.5 text-xs text-slate-400">
+                <UsersIcon width={12} height={12} />
+                <span className="num">{group.member_count}</span> חברים בקבוצה
+              </p>
+            )}
+          </div>
 
-        {error && <p className="rounded-lg bg-red-500/15 px-3 py-2 text-sm font-bold text-red-300">{error}</p>}
+          {/* Tabs */}
+          <div className="flex border-b border-white/10">
+            <button
+              onClick={() => switchTab('signup')}
+              className={`flex-1 py-3 text-sm font-bold transition-colors cursor-pointer ${
+                tab === 'signup' ? 'border-b-2 border-gold bg-white/5 text-white' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              הרשמה
+            </button>
+            <button
+              onClick={() => switchTab('signin')}
+              className={`flex-1 py-3 text-sm font-bold transition-colors cursor-pointer ${
+                tab === 'signin' ? 'border-b-2 border-gold bg-white/5 text-white' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              כבר רשום? כניסה
+            </button>
+          </div>
 
-        <GoldButton type="submit" disabled={loading}>
-          {loading ? 'מצטרף…' : 'הצטרף לקבוצה'}
-        </GoldButton>
-      </form>
+          <div className="p-6">
+            {/* Sign-up */}
+            {tab === 'signup' && (
+              <form onSubmit={handleSignUp} className="space-y-4">
+                <div>
+                  <label className="mb-1.5 block text-sm font-bold text-slate-300">שם מלא</label>
+                  <input
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="השם שלך"
+                    required
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-right text-white placeholder-slate-500 outline-none focus:border-gold/60 focus:ring-2 focus:ring-gold/20"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-bold text-slate-300">מספר טלפון</label>
+                  <input
+                    type="tel"
+                    value={signupPhone}
+                    onChange={(e) => setSignupPhone(e.target.value)}
+                    placeholder="050-0000000"
+                    dir="ltr"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-right text-white placeholder-slate-500 outline-none focus:border-gold/60 focus:ring-2 focus:ring-gold/20"
+                  />
+                </div>
 
-      <p className="mt-6 text-center text-sm text-emerald-100/60">
-        מעדיף קבוצה משלך?{' '}
-        <Link to={ref ? `/create?ref=${ref}` : '/create'} className="font-bold text-[#f5c518] hover:underline">
-          צור קבוצה חדשה
-        </Link>
-      </p>
-    </GreenPage>
+                {error && <p className="rounded-xl bg-red-500/10 px-4 py-2.5 text-sm font-bold text-red-400">{error}</p>}
+
+                <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3">
+                  <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="h-4 w-4 accent-gold" />
+                  <div>
+                    <div className="text-sm font-bold text-slate-200">זכור אותי</div>
+                    <div className="text-xs text-slate-500">הישארו מחוברים בין ביקורים</div>
+                  </div>
+                </label>
+
+                <button
+                  type="submit"
+                  disabled={loading || !fullName.trim()}
+                  className="btn-gold w-full py-3 disabled:opacity-50"
+                >
+                  {loading ? 'מצטרף...' : 'הצטרף לקבוצה'}
+                </button>
+              </form>
+            )}
+
+            {/* Sign-in */}
+            {tab === 'signin' && (
+              <>
+                {accounts ? (
+                  <div>
+                    <p className="mb-3 text-sm font-bold text-slate-300">בחרו חשבון:</p>
+                    <div className="space-y-2">
+                      {accounts.map((a) => (
+                        <button
+                          key={a.id}
+                          onClick={() => login(a, remember)}
+                          className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-right transition-colors hover:bg-white/10 cursor-pointer"
+                        >
+                          <div className="font-bold text-white">{a.display_name}</div>
+                          <div className="text-xs text-slate-400">{a.group_name}</div>
+                        </button>
+                      ))}
+                    </div>
+                    <button onClick={() => setAccounts(null)} className="mt-4 w-full text-center text-sm text-slate-400 hover:text-white cursor-pointer">
+                      חזרה
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSignIn} className="space-y-4">
+                    <div>
+                      <label className="mb-1.5 block text-sm font-bold text-slate-300">מספר טלפון</label>
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="050-0000000"
+                        required
+                        dir="ltr"
+                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-right text-white placeholder-slate-500 outline-none focus:border-gold/60 focus:ring-2 focus:ring-gold/20"
+                      />
+                    </div>
+
+                    {error && <p className="rounded-xl bg-red-500/10 px-4 py-2.5 text-sm font-bold text-red-400">{error}</p>}
+
+                    <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3">
+                      <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="h-4 w-4 accent-gold" />
+                      <div>
+                        <div className="text-sm font-bold text-slate-200">זכור אותי</div>
+                        <div className="text-xs text-slate-500">הישארו מחוברים בין ביקורים</div>
+                      </div>
+                    </label>
+
+                    <button
+                      type="submit"
+                      disabled={loading || !phone.trim()}
+                      className="btn-gold w-full py-3 disabled:opacity-50"
+                    >
+                      {loading ? 'מחפש...' : 'כניסה'}
+                    </button>
+                  </form>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-4 text-center text-sm text-slate-500">
+          <Link to="/" className="hover:text-slate-300 transition-colors">חזרה לדף הבית</Link>
+        </div>
+      </div>
+    </div>
   )
 }

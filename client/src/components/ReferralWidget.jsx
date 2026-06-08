@@ -6,7 +6,10 @@ import { UsersIcon, TrophyIcon } from '../lib/icons.jsx'
 // (set on create/join) and shows referral progress. Renders nothing when
 // no member is "logged in". Use `variant="green"` on the forest-theme pages.
 export default function ReferralWidget({ variant = 'app' }) {
-  const memberId = typeof localStorage !== 'undefined' ? localStorage.getItem('wc_member') : null
+  const memberId =
+    (typeof localStorage !== 'undefined' && localStorage.getItem('wc_member')) ||
+    (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('wc_member')) ||
+    null
   const [data, setData] = useState(null)
 
   useEffect(() => {
