@@ -69,6 +69,22 @@ export default function Dashboard() {
         </Link>
       </div>
 
+      <Link
+        to="/how-to-play"
+        className="glass-card animate-fade-up flex items-center justify-between gap-4 p-4 hover:bg-white/5 transition-colors"
+      >
+        <div className="flex items-center gap-3">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-gold/15 text-gold">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          </span>
+          <div>
+            <div className="font-bold text-white">איך משחקים?</div>
+            <div className="text-sm text-slate-400">מדריך מהיר לכללים ומערכת הניקוד</div>
+          </div>
+        </div>
+        <span className="text-slate-400">←</span>
+      </Link>
+
       <UpgradePrompt />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
