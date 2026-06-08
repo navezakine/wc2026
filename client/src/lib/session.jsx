@@ -25,9 +25,13 @@ export function SessionProvider({ children }) {
   const [memberId, setMemberId] = useState(saved.memberId)
   const [loading, setLoading] = useState(!!saved.memberId)
 
-  // Load groups only when logged in
+  // Load groups whenever memberId is set (covers both initial load and after login)
   useEffect(() => {
-    if (!memberId) return
+    if (!memberId) {
+      setLoading(false)
+      return
+    }
+    setLoading(true)
     let alive = true
     api
       .getGroups()
@@ -41,7 +45,7 @@ export function SessionProvider({ children }) {
     return () => {
       alive = false
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [memberId])
 
   // Load members whenever group changes
   useEffect(() => {
@@ -62,7 +66,6 @@ export function SessionProvider({ children }) {
     storage.setItem('wc_group', memberData.group_id)
     setMemberId(memberData.id)
     setGroupId(memberData.group_id)
-    setLoading(true)
   }
 
   const logout = () => {
