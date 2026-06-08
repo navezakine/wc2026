@@ -89,7 +89,7 @@ export default function Join() {
           <p className="mt-2 text-sm text-slate-400">
             הקבוצה <span className="font-bold text-white">{group?.name}</span> הגיעה למגבלת החברים החינמית ({group?.free_limit ?? 6} חברים).
           </p>
-          <p className="mt-2 text-sm text-slate-400">יוצר הקבוצה צריך לשדרג לפרימיום כדי להוסיף עוד חברים.</p>
+          <p className="mt-2 text-sm text-slate-400">פנה ליוצר הקבוצה כדי להצטרף.</p>
           <Link to="/" className="btn-gold mt-5 inline-block px-6 py-2.5">חזרה לדף הבית</Link>
         </div>
       </div>

@@ -5,7 +5,7 @@ import { TrophyIcon } from '../lib/icons.jsx'
 
 const TABS = [
   { key: 'skill', label: 'עמוד כבוד', hint: 'לפי נקודות ניחוש בלבד' },
-  { key: 'overall', label: 'טבלה כללית', hint: 'קובע את הזוכה בפרס' },
+  { key: 'overall', label: 'טבלה כללית', hint: 'דירוג כולל לפי כל הנקודות' },
 ]
 
 function RankBadge({ rank }) {
@@ -56,7 +56,7 @@ export default function CompetitionLeaderboard() {
 
       {tab === 'overall' && (
         <div className="mb-4 flex items-center gap-2 rounded-xl border border-[#f5c518]/30 bg-[#f5c518]/10 px-4 py-2.5 text-sm font-bold text-[#f5c518]">
-          <TrophyIcon width={16} height={16} /> מקום ראשון בטבלה הכללית זוכה בפרס!
+          <TrophyIcon width={16} height={16} /> מקום ראשון בטבלה הכללית — אלוף ליגת הניחושים הישראלית!
         </div>
       )}
 

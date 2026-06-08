@@ -44,11 +44,11 @@ const steps = [
   {
     num: 6,
     icon: TrophyIcon,
-    title: 'תחרות הפרסים',
-    desc: 'הצטרפו לליגת הניחושים הישראלית — פרס מיוחד לזוכה האולטימטיבי.',
+    title: 'ליגת הניחושים הישראלית',
+    desc: 'הצטרפו לתחרות כלל-ארצית — מי ינחש הכי טוב את המונדיאל?',
     descJsx: (
       <span>
-        הצטרפו לליגת הניחושים הישראלית — פרס מיוחד לזוכה האולטימטיבי.{' '}
+        הצטרפו לתחרות כלל-ארצית — מי ינחש הכי טוב את המונדיאל?{' '}
         <Link to="/competition" className="font-bold text-gold/70 hover:text-gold underline decoration-dotted">
           פרטים נוספים ↗
         </Link>

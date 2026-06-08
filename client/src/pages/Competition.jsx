@@ -173,7 +173,7 @@ function EntryFlow({ onEntered }) {
               else setShowConsent(true)
             }}
           >
-            הצטרף לתחרות הפרסים
+            הצטרף לתחרות
           </GoldButton>
         </div>
       ) : (
@@ -231,10 +231,8 @@ export default function Competition() {
       {/* Hero */}
       <div className="mb-5 overflow-hidden rounded-3xl border border-[#f5c518]/30 bg-gradient-to-bl from-[#1a3a2a] to-[#0f241a] p-6 text-center shadow-2xl animate-fade-up">
         <TrophyIcon width={48} height={48} className="mx-auto text-[#f5c518]" />
-        <h1 className="mt-3 text-2xl font-black text-white">תחרות המונדיאל — הזוכה מקבל פרס!</h1>
-        <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#f5c518] px-5 py-2 text-base font-extrabold text-[#0f241a]">
-          🎁 {info?.prize || 'פרס מיוחד לזוכה'}
-        </div>
+        <h1 className="mt-3 text-2xl font-black text-white">ליגת הניחושים הישראלית</h1>
+        <p className="mt-2 text-sm text-emerald-200/70">תחרות כלל-ארצית — מי ינחש הכי טוב את המונדיאל?</p>
       </div>
 
       {/* How it works */}
@@ -257,7 +255,7 @@ export default function Competition() {
             {
               icon: ClockIcon,
               title: 'הזוכה מוכרז בסוף',
-              desc: 'בסיום המונדיאל (19 ביולי), המשתתף עם הכי הרבה נקודות בתחרות מקבל את הפרס.',
+              desc: 'בסיום המונדיאל (19 ביולי), המשתתף עם הכי הרבה נקודות בתחרות יוכרז כאלוף הליגה.',
             },
           ].map(({ icon: Icon, title, desc }) => (
             <div key={title} className="flex flex-col gap-2 bg-[#0f241a] p-4">

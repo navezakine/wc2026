@@ -11,7 +11,7 @@ const titles = {
   '/app/matches': 'משחקים',
   '/app/predictions': 'הניחושים שלי',
   '/app/leaderboard': 'טבלת הליגה',
-  '/competition': 'תחרות הפרסים',
+  '/competition': 'ליגת הניחושים',
   '/competition/leaderboard': 'טבלת התחרות',
 }
 

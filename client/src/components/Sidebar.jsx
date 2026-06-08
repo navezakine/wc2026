@@ -20,7 +20,7 @@ const links = [
   { to: '/app/matches', label: 'משחקים', icon: BallIcon },
   { to: '/app/predictions', label: 'הניחושים שלי', icon: TargetIcon },
   { to: '/app/leaderboard', label: 'טבלת הליגה', icon: ChartIcon },
-  { to: '/competition', label: 'תחרות הפרסים', icon: TrophyIcon },
+  { to: '/competition', label: 'ליגת הניחושים', icon: TrophyIcon },
   { to: '/scoring', label: 'מערכת הניקוד', icon: StarIcon },
 ]
 
