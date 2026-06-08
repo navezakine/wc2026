@@ -39,7 +39,7 @@ export default function Layout() {
         <Header onMenu={() => setOpen(true)} title={title} />
         <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:py-8">
           <Outlet />
-          <div className="mt-8 max-w-sm">
+          <div className="mt-8 max-w-sm mx-auto">
             <ReferralWidget />
           </div>
         </main>
