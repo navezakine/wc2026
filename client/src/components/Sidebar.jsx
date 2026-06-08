@@ -15,13 +15,13 @@ import {
 } from '../lib/icons.jsx'
 
 const links = [
+  { to: '/how-to-play', label: 'איך משחקים?', icon: ClockIcon },
   { to: '/app', label: 'לוח בקרה', icon: HomeIcon, end: true },
   { to: '/app/matches', label: 'משחקים', icon: BallIcon },
   { to: '/app/predictions', label: 'הניחושים שלי', icon: TargetIcon },
   { to: '/app/leaderboard', label: 'טבלת הליגה', icon: ChartIcon },
   { to: '/competition', label: 'תחרות הפרסים', icon: TrophyIcon },
   { to: '/scoring', label: 'מערכת הניקוד', icon: StarIcon },
-  { to: '/how-to-play', label: 'איך משחקים?', icon: ClockIcon },
 ]
 
 export default function Sidebar({ open, onClose }) {
