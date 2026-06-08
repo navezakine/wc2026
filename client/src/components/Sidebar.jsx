@@ -12,6 +12,7 @@ import {
   ClockIcon,
   LogoutIcon,
   CloseIcon,
+  UsersIcon,
 } from '../lib/icons.jsx'
 
 const links = [
@@ -22,6 +23,7 @@ const links = [
   { to: '/app/leaderboard', label: 'טבלת הליגה', icon: ChartIcon },
   { to: '/competition', label: 'ליגת הניחושים', icon: TrophyIcon },
   { to: '/scoring', label: 'מערכת הניקוד', icon: StarIcon },
+  { to: '/create', label: 'צור קבוצה', icon: UsersIcon },
 ]
 
 export default function Sidebar({ open, onClose }) {
