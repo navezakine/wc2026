@@ -10,18 +10,14 @@ export default function Join() {
   const [params] = useSearchParams()
   const ref = params.get('ref') || undefined
   const navigate = useNavigate()
-  const { login, isLoggedIn } = useSession()
-
-  useEffect(() => {
-    if (isLoggedIn) navigate('/app', { replace: true })
-  }, [isLoggedIn, navigate])
+  const { addMembership, loginAll, currentMember } = useSession()
 
   const [tab, setTab] = useState('signup')
   const [group, setGroup] = useState(null)
   const [notFound, setNotFound] = useState(false)
 
   // Sign-up state
-  const [fullName, setFullName] = useState('')
+  const [fullName, setFullName] = useState(currentMember?.display_name || '')
   const [signupPhone, setSignupPhone] = useState('')
   // Sign-in state
   const [phone, setPhone] = useState('')
@@ -45,7 +41,8 @@ export default function Join() {
     setLoading(true)
     try {
       const res = await api.joinGroup({ inviteCode, fullName: fullName.trim(), phone: signupPhone.trim(), ref })
-      login({ id: res.member.id, group_id: res.group.id }, remember)
+      addMembership({ memberId: res.member.id, groupId: res.group.id }, remember)
+      navigate('/app', { replace: true })
     } catch (err) {
       setError(err.message || 'שגיאה בהצטרפות')
     } finally {
@@ -60,7 +57,7 @@ export default function Join() {
     try {
       const results = await api.login(phone.trim())
       if (results.length === 1) {
-        login(results[0], remember)
+        loginAll(results, results[0], remember)
       } else {
         setAccounts(results)
       }
@@ -180,7 +177,7 @@ export default function Join() {
                       {accounts.map((a) => (
                         <button
                           key={a.id}
-                          onClick={() => login(a, remember)}
+                          onClick={() => loginAll(accounts, a, remember)}
                           className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-right transition-colors hover:bg-white/10 cursor-pointer"
                         >
                           <div className="font-bold text-white">{a.display_name}</div>

@@ -104,6 +104,34 @@ router.post('/', async (req, res, next) => {
     if (error) throw error // Hebrew messages from DB triggers bubble up here
 
     await trackReferredProgress(memberId)
+
+    // Fan-out: apply same prediction to all other member rows sharing this phone number
+    try {
+      const { data: member } = await supabase
+        .from('members').select('phone_number').eq('id', memberId).single()
+      if (member?.phone_number) {
+        const { data: siblings } = await supabase
+          .from('members').select('id')
+          .eq('phone_number', member.phone_number).neq('id', memberId)
+        if (siblings?.length) {
+          await supabase.from('predictions').upsert(
+            siblings.map((s) => ({
+              member_id: s.id,
+              match_id: matchId,
+              predicted_outcome: outcome,
+              predicted_winner: outcome,
+              predicted_home_score: home,
+              predicted_away_score: away,
+              predicted_top_scorer: predictedTopScorer || null,
+            })),
+            { onConflict: 'member_id,match_id' },
+          )
+        }
+      }
+    } catch (e) {
+      console.error('[prediction fan-out]', e.message)
+    }
+
     res.status(201).json(data?.[0])
   } catch (err) {
     next(err)

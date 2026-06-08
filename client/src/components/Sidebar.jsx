@@ -1,4 +1,5 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useState, useRef, useEffect } from 'react'
+import { NavLink, Link, useNavigate } from 'react-router-dom'
 import Logo from './Logo.jsx'
 import { useSession } from '../lib/session.jsx'
 import {
@@ -24,8 +25,17 @@ const links = [
 ]
 
 export default function Sidebar({ open, onClose }) {
-  const { logout } = useSession()
+  const { logout, currentGroup, allMemberships, switchMembership } = useSession()
   const navigate = useNavigate()
+  const [switcherOpen, setSwitcherOpen] = useState(false)
+  const switcherRef = useRef(null)
+
+  useEffect(() => {
+    if (!switcherOpen) return
+    const handler = (e) => { if (!switcherRef.current?.contains(e.target)) setSwitcherOpen(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [switcherOpen])
 
   function handleLogout() {
     logout()
@@ -58,6 +68,62 @@ export default function Sidebar({ open, onClose }) {
           >
             <CloseIcon />
           </button>
+        </div>
+
+        {/* Group switcher */}
+        <div className="mx-3 mb-1 relative" ref={switcherRef}>
+          {allMemberships.length >= 2 ? (
+            <>
+              <button
+                onClick={() => setSwitcherOpen((o) => !o)}
+                className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-right hover:bg-white/5 transition-colors cursor-pointer"
+              >
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">קבוצה פעילה</p>
+                <div className="mt-0.5 flex items-center justify-between gap-2">
+                  <span className="text-sm font-black text-gold truncate">{currentGroup?.name || '…'}</span>
+                  <span className={`text-xs text-slate-400 transition-transform duration-200 ${switcherOpen ? '-rotate-180' : ''}`}>▾</span>
+                </div>
+              </button>
+              {switcherOpen && (
+                <div className="absolute right-0 left-0 top-full z-50 mt-1 overflow-hidden rounded-xl border border-white/10 bg-[#0b1020]/98 shadow-xl backdrop-blur-xl">
+                  {allMemberships.map((m) => (
+                    <button
+                      key={m.memberId}
+                      onClick={() => { switchMembership(m.memberId); setSwitcherOpen(false); onClose() }}
+                      className={`flex w-full items-center gap-3 px-4 py-3 text-right text-sm transition-colors cursor-pointer
+                        ${m.isActive ? 'bg-gold/10 font-black text-white' : 'font-bold text-slate-300 hover:bg-white/5'}`}
+                    >
+                      <span className={`h-2 w-2 shrink-0 rounded-full ${m.isActive ? 'bg-gold' : 'border border-white/20'}`} />
+                      <span className="flex-1 truncate">{m.groupName || '…'}</span>
+                      {m.isActive && <span className="text-[10px] font-bold text-gold">פעיל</span>}
+                    </button>
+                  ))}
+                  <div className="border-t border-white/10">
+                    <Link
+                      to="/join"
+                      onClick={() => { setSwitcherOpen(false); onClose() }}
+                      className="flex items-center gap-2 px-4 py-3 text-sm font-bold text-slate-400 transition-colors hover:bg-white/5 hover:text-gold"
+                    >
+                      <span className="text-gold">+</span>
+                      הצטרף לקבוצה נוספת
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">קבוצה פעילה</p>
+              <p className="mt-0.5 text-sm font-black text-gold truncate">{currentGroup?.name || '…'}</p>
+              <Link
+                to="/join"
+                onClick={onClose}
+                className="mt-1 block text-xs font-bold text-slate-500 transition-colors hover:text-gold"
+              >
+                + הצטרף לקבוצה נוספת
+              </Link>
+            </div>
+          )}
         </div>
 
         <nav className="flex-1 space-y-1 px-3 py-2" aria-label="ניווט ראשי">

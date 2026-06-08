@@ -5,7 +5,7 @@ import { useSession } from '../lib/session.jsx'
 import { api } from '../lib/api.js'
 
 export default function Login() {
-  const { login, isLoggedIn } = useSession()
+  const { loginAll, addMembership, isLoggedIn } = useSession()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function Login() {
     try {
       const results = await api.login(phone.trim())
       if (results.length === 1) {
-        login(results[0], remember)
+        loginAll(results, results[0], remember)
       } else {
         setAccounts(results)
       }
@@ -61,7 +61,7 @@ export default function Login() {
         fullName: fullName.trim(),
         phone: signupPhone.trim(),
       })
-      login({ id: res.member.id, group_id: res.group.id }, remember)
+      addMembership({ memberId: res.member.id, groupId: res.group.id }, remember)
     } catch (err) {
       setError(err.message || 'שגיאה בהרשמה')
     } finally {
@@ -70,7 +70,7 @@ export default function Login() {
   }
 
   function selectAccount(account) {
-    login(account, remember)
+    loginAll(accounts, account, remember)
   }
 
   return (
