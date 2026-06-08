@@ -22,7 +22,7 @@ const steps = [
     desc: null,
     descJsx: (
       <span>
-        תוצאה מדויקת = <span className="num font-black text-gold">10</span> נק׳ · מנצחת נכונה ={' '}
+        תוצאה מדויקת = <span className="num font-black text-gold">10</span> נק׳ · מנצחת נכונהקבוצה  ={' '}
         <span className="num font-black text-gold">5</span> נק׳ ·{' '}
         <Link to="/scoring" className="font-bold text-gold/70 hover:text-gold underline decoration-dotted">
           לטבלת הניקוד המלאה ↗
@@ -46,11 +46,10 @@ const steps = [
     num: 6,
     icon: TrophyIcon,
     title: 'תחרות הפרסים',
-    desc: 'הצטרפו לתחרות הגלובלית — <span class="num font-black text-gold">500 ₪</span> לזוכה האולטימטיבי.',
+    desc: 'הצטרפו לתחרות הגלובלית — פרס מיוחד לזוכה האולטימטיבי.',
     descJsx: (
       <span>
-        הצטרפו לתחרות הגלובלית —{' '}
-        <span className="num font-black text-gold">500 ₪</span> לזוכה האולטימטיבי.{' '}
+        הצטרפו לתחרות הגלובלית — פרס מיוחד לזוכה האולטימטיבי.{' '}
         <Link to="/competition" className="font-bold text-gold/70 hover:text-gold underline decoration-dotted">
           פרטים נוספים ↗
         </Link>
@@ -77,7 +76,7 @@ export default function HowToPlay() {
             ⚽ מונדיאל 2026
           </div>
           <h1 className="mt-4 text-3xl font-black text-white">איך משחקים?</h1>
-          <p className="mt-2 text-slate-400">המדריך המלא ל-2 דקות — מההצטרפות עד לראש הטבלה</p>
+          <p className="mt-2 text-slate-400">המדריך המלא — מההצטרפות עד לראש הטבלה</p>
         </div>
 
         {/* Steps timeline */}

@@ -62,7 +62,7 @@ export default function Admin() {
 
   async function announce(memberId, name) {
     try {
-      await api.adminAnnounceWinner({ memberId, prizeDescription: 'כרטיס מתנה 500 שקל לאמזון' }, pw)
+      await api.adminAnnounceWinner({ memberId, prizeDescription: 'פרס מיוחד לזוכה' }, pw)
       setToast({ type: 'ok', msg: `הזוכה ${name} הוכרז בהצלחה!` })
     } catch (err) {
       setToast({ type: 'err', msg: err.message })
