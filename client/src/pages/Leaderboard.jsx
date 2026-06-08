@@ -9,23 +9,34 @@ import DemoBanner from '../components/DemoBanner.jsx'
 import { TrophyIcon, TargetIcon, BallIcon, UsersIcon } from '../lib/icons.jsx'
 
 function Podium({ players }) {
-  const order = [players[1], players[0], players[2]].filter(Boolean)
+  // Always show 3 slots — fill missing with null
+  const slots = [players[1] || null, players[0] || null, players[2] || null]
   const heights = ['h-24', 'h-32', 'h-20']
-  const place = [2, 1, 3]
+  const places = [2, 1, 3]
   const medal = ['bg-slate-300 text-night', 'bg-gold text-night', 'bg-amber-700 text-white']
   return (
     <div className="glass-card flex items-end justify-center gap-3 p-6 sm:gap-6 sm:p-8">
-      {order.map((p, i) => (
-        <div key={p.member_id} className="flex w-24 flex-col items-center sm:w-32">
-          <span className="relative grid h-14 w-14 place-items-center rounded-full bg-gradient-to-bl from-team to-gold text-lg font-black text-white sm:h-16 sm:w-16">
-            {p.display_name.slice(0, 1)}
-            {place[i] === 1 && <TrophyIcon className="absolute -top-5 text-gold" width={22} height={22} />}
-          </span>
-          <div className="mt-2 max-w-full truncate text-center text-sm font-bold text-white">{p.display_name}</div>
-          <div className="num text-xs font-black text-gold">{p.total_points} נק׳</div>
+      {slots.map((p, i) => (
+        <div key={places[i]} className="flex w-24 flex-col items-center sm:w-32">
+          {p ? (
+            <>
+              <span className="relative grid h-14 w-14 place-items-center rounded-full bg-gradient-to-bl from-team to-gold text-lg font-black text-white sm:h-16 sm:w-16">
+                {p.display_name.slice(0, 1)}
+                {places[i] === 1 && <TrophyIcon className="absolute -top-5 text-gold" width={22} height={22} />}
+              </span>
+              <div className="mt-2 max-w-full truncate text-center text-sm font-bold text-white">{p.display_name}</div>
+              <div className="num text-xs font-black text-gold">{p.total_points} נק׳</div>
+            </>
+          ) : (
+            <>
+              <span className="grid h-14 w-14 place-items-center rounded-full border-2 border-dashed border-white/10 text-2xl text-white/20 sm:h-16 sm:w-16">?</span>
+              <div className="mt-2 text-center text-sm text-white/20">—</div>
+              <div className="num text-xs text-white/10">0 נק׳</div>
+            </>
+          )}
           <div className={`mt-2 flex w-full ${heights[i]} items-start justify-center rounded-t-xl bg-gradient-to-t from-white/5 to-white/10 pt-2`}>
-            <span className={`num grid h-9 w-9 place-items-center rounded-lg text-base font-black ${medal[i]}`}>
-              {place[i]}
+            <span className={`num grid h-9 w-9 place-items-center rounded-lg text-base font-black ${p ? medal[i] : 'bg-white/5 text-white/20'}`}>
+              {places[i]}
             </span>
           </div>
         </div>
@@ -125,7 +136,7 @@ export default function Leaderboard() {
         </div>
       )}
 
-      {players.length >= 3 && <Podium players={players} />}
+      {players.length >= 1 && <Podium players={players} />}
 
       <InviteCard memberId={memberId} />
 
