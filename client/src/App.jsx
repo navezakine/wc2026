@@ -26,9 +26,6 @@ export default function App() {
         {/* Public pages */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/scoring" element={<Scoring />} />
-        <Route path="/how-to-play" element={<HowToPlay />} />
-
         {/* Group creation + referral flow (green/gold theme) */}
         <Route path="/create" element={<CreateGroup />} />
         <Route path="/share" element={<ShareGroup />} />
@@ -49,6 +46,8 @@ export default function App() {
           <Route path="/app/leaderboard" element={<Leaderboard />} />
           <Route path="/competition" element={<Competition />} />
           <Route path="/competition/leaderboard" element={<CompetitionLeaderboard />} />
+          <Route path="/scoring" element={<Scoring />} />
+          <Route path="/how-to-play" element={<HowToPlay />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

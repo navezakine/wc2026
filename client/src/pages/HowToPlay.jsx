@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import Logo from '../components/Logo.jsx'
 import { TrophyIcon, TargetIcon, BallIcon, UsersIcon, FireIcon, ChartIcon } from '../lib/icons.jsx'
 
 const steps = [
@@ -67,15 +66,10 @@ const quickRules = [
 
 export default function HowToPlay() {
   return (
-    <div className="min-h-screen bg-night bg-stadium-mesh px-4 py-10">
-      <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl">
         {/* Header */}
         <div className="mb-8 flex flex-col items-center text-center">
-          <Logo />
-          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-sm font-bold text-gold">
-            ⚽ מונדיאל 2026
-          </div>
-          <h1 className="mt-4 text-3xl font-black text-white">איך משחקים?</h1>
+          <h1 className="text-3xl font-black text-white">איך משחקים?</h1>
           <p className="mt-2 text-slate-400">המדריך המלא — מההצטרפות עד לראש הטבלה</p>
         </div>
 
@@ -138,7 +132,6 @@ export default function HowToPlay() {
             טבלת הניקוד המלאה
           </Link>
         </div>
-      </div>
     </div>
   )
 }

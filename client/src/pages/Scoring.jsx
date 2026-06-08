@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import Logo from '../components/Logo.jsx'
 import { TrophyIcon, TargetIcon, BallIcon, FireIcon, UsersIcon } from '../lib/icons.jsx'
 
 const predictionRules = [
@@ -12,7 +11,7 @@ const predictionRules = [
   },
   {
     points: 5,
-    label: 'מנצחת נכונה / תיקו',
+    label: 'קבוצה מנצחת נכונה / תיקו',
     desc: 'ניחשתם נכון מי תנצח, גם אם הסקור שגוי',
     icon: BallIcon,
   },
@@ -88,7 +87,7 @@ function RuleCard({ points, label, desc, icon: Icon, highlight }) {
 
 function ScoringPodium() {
   const steps = [
-    { pts: 5,  label: 'מנצחת נכונה', place: 2, h: 'h-24', medal: 'bg-slate-300 text-night' },
+    { pts: 5,  label: 'קבוצה מנצחת נכונה', place: 2, h: 'h-24', medal: 'bg-slate-300 text-night' },
     { pts: 10, label: 'תוצאה מדויקת', place: 1, h: 'h-32', medal: 'bg-gold text-night' },
     { pts: 2,  label: 'מלך השערים',  place: 3, h: 'h-20', medal: 'bg-amber-700 text-white' },
   ]
@@ -129,12 +128,10 @@ function Section({ title, subtitle, rules, accent }) {
 
 export default function Scoring() {
   return (
-    <div className="min-h-screen bg-night bg-stadium-mesh px-4 py-10">
-      <div className="mx-auto max-w-xl">
+    <div className="mx-auto max-w-xl">
         {/* Header */}
         <div className="mb-8 flex flex-col items-center text-center">
-          <Logo />
-          <h1 className="mt-6 text-3xl font-black text-white">איך מרוויחים נקודות?</h1>
+          <h1 className="text-3xl font-black text-white">איך מרוויחים נקודות?</h1>
           <p className="mt-2 text-slate-400">כל מה שצריך לדעת כדי לטפס לראש הטבלה</p>
         </div>
 
@@ -176,7 +173,6 @@ export default function Scoring() {
           <Link to="/app" className="btn-gold px-6 py-2.5">התחל לנחש</Link>
           <Link to="/" className="btn-ghost px-6 py-2.5">דף הבית</Link>
         </div>
-      </div>
     </div>
   )
 }
