@@ -74,9 +74,9 @@ export default function Home() {
               <Link to="/app" className="btn-primary px-7 py-3 text-base">
                 הצטרף לתחרות הגלובלית
               </Link>
-              <a href="#how" className="btn-ghost px-7 py-3 text-base">
+              <Link to="/scoring" className="btn-ghost px-7 py-3 text-base">
                 איך זה עובד?
-              </a>
+              </Link>
             </div>
 
             <dl className="mt-10 grid max-w-md grid-cols-3 gap-4 mx-auto">

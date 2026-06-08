@@ -61,8 +61,8 @@ function InviteCard({ memberId }) {
           <div>
             <div className="font-extrabold text-white">הזמן חברים לקבוצה</div>
             <div className="text-xs text-slate-400">
-              הזמנת <span className="num font-bold text-gold">{data.invited}</span> חברים · צברת{' '}
-              <span className="num font-bold text-gold">{data.points}</span> נקודות הזמנה
+              כל חבר שמצטרף = <span className="font-bold text-gold">+10 נקודות</span> לך · הזמנת{' '}
+              <span className="num font-bold text-gold">{data.invited}</span> עד כה
             </div>
           </div>
         </div>
