@@ -8,6 +8,7 @@ import {
   ChartIcon,
   TrophyIcon,
   StarIcon,
+  ClockIcon,
   LogoutIcon,
   CloseIcon,
 } from '../lib/icons.jsx'
@@ -19,6 +20,7 @@ const links = [
   { to: '/app/leaderboard', label: 'טבלת הליגה', icon: ChartIcon },
   { to: '/competition', label: 'תחרות הפרסים', icon: TrophyIcon },
   { to: '/scoring', label: 'מערכת הניקוד', icon: StarIcon },
+  { to: '/how-to-play', label: 'איך משחקים?', icon: ClockIcon },
 ]
 
 export default function Sidebar({ open, onClose }) {

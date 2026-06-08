@@ -263,8 +263,10 @@ export default function Login() {
           </Link>
         </div>
 
-        <div className="mt-4 text-center text-sm text-slate-500">
+        <div className="mt-4 flex justify-center gap-4 text-sm text-slate-500">
           <Link to="/" className="hover:text-slate-300 transition-colors">חזרה לדף הבית</Link>
+          <span>·</span>
+          <Link to="/how-to-play" className="hover:text-slate-300 transition-colors">איך זה עובד?</Link>
         </div>
       </div>
     </div>

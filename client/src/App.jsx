@@ -4,6 +4,7 @@ import { SessionProvider } from './lib/session.jsx'
 import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import Scoring from './pages/Scoring.jsx'
+import HowToPlay from './pages/HowToPlay.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Matches from './pages/Matches.jsx'
 import Predictions from './pages/Predictions.jsx'
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/scoring" element={<Scoring />} />
+        <Route path="/how-to-play" element={<HowToPlay />} />
 
         {/* Group creation + referral flow (green/gold theme) */}
         <Route path="/create" element={<CreateGroup />} />
