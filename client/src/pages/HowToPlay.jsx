@@ -22,7 +22,7 @@ const steps = [
     desc: null,
     descJsx: (
       <span>
-        תוצאה מדויקת = <span className="num font-black text-gold">10</span> נק׳ · מנצחת נכונהקבוצה  ={' '}
+        תוצאה מדויקת = <span className="num font-black text-gold">10</span> נק׳ · קבוצה מנצחת נכונה  ={' '}
         <span className="num font-black text-gold">5</span> נק׳ ·{' '}
         <Link to="/scoring" className="font-bold text-gold/70 hover:text-gold underline decoration-dotted">
           לטבלת הניקוד המלאה ↗
@@ -46,10 +46,10 @@ const steps = [
     num: 6,
     icon: TrophyIcon,
     title: 'תחרות הפרסים',
-    desc: 'הצטרפו לתחרות הגלובלית — פרס מיוחד לזוכה האולטימטיבי.',
+    desc: 'הצטרפו לליגת הניחושים הישראלית — פרס מיוחד לזוכה האולטימטיבי.',
     descJsx: (
       <span>
-        הצטרפו לתחרות הגלובלית — פרס מיוחד לזוכה האולטימטיבי.{' '}
+        הצטרפו לליגת הניחושים הישראלית — פרס מיוחד לזוכה האולטימטיבי.{' '}
         <Link to="/competition" className="font-bold text-gold/70 hover:text-gold underline decoration-dotted">
           פרטים נוספים ↗
         </Link>
