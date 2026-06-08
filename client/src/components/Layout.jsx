@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation, Navigate } from 'react-router-dom'
 import Sidebar from './Sidebar.jsx'
 import Header from './Header.jsx'
 import ReferralWidget from './ReferralWidget.jsx'
+import { useSession } from '../lib/session.jsx'
+import Spinner from './Spinner.jsx'
 
 const titles = {
   '/app': 'לוח בקרה',
@@ -16,7 +18,17 @@ const titles = {
 export default function Layout() {
   const [open, setOpen] = useState(false)
   const { pathname } = useLocation()
+  const { isLoggedIn, loading } = useSession()
   const title = titles[pathname] || 'ליגת הניחושים'
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-night">
+        <Spinner />
+      </div>
+    )
+  }
+  if (!isLoggedIn) return <Navigate to="/login" replace />
 
   return (
     <div className="min-h-screen bg-night bg-stadium-mesh">

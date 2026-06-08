@@ -37,6 +37,9 @@ export const api = {
   enterCompetition: (payload) =>
     request('/competition/enter', { method: 'POST', body: JSON.stringify(payload) }),
 
+  // Auth
+  login: (phone) => request('/auth/login', { method: 'POST', body: JSON.stringify({ phone }) }),
+
   // Phase 6 — admin (password sent via header)
   adminStats: (pw) => request('/admin/stats', { headers: adminHeaders(pw) }),
   adminGroups: (pw) => request('/admin/groups', { headers: adminHeaders(pw) }),

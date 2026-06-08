@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout.jsx'
 import { SessionProvider } from './lib/session.jsx'
 import Home from './pages/Home.jsx'
+import Login from './pages/Login.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Matches from './pages/Matches.jsx'
 import Predictions from './pages/Predictions.jsx'
@@ -18,40 +19,36 @@ import NotFound from './pages/NotFound.jsx'
 
 export default function App() {
   return (
-    <Routes>
-      {/* Public landing page */}
-      <Route path="/" element={<Home />} />
+    <SessionProvider>
+      <Routes>
+        {/* Public pages */}
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
 
-      {/* Group creation + referral flow (green/gold theme) */}
-      <Route path="/create" element={<CreateGroup />} />
-      <Route path="/share" element={<ShareGroup />} />
-      <Route path="/join/:inviteCode" element={<Join />} />
-      <Route path="/join" element={<JoinGlobal />} />
+        {/* Group creation + referral flow (green/gold theme) */}
+        <Route path="/create" element={<CreateGroup />} />
+        <Route path="/share" element={<ShareGroup />} />
+        <Route path="/join/:inviteCode" element={<Join />} />
+        <Route path="/join" element={<JoinGlobal />} />
 
-      {/* Public, shareable group leaderboard (no app shell — viewed by anyone) */}
-      <Route path="/group/:inviteCode/leaderboard" element={<GroupLeaderboard />} />
+        {/* Public, shareable group leaderboard */}
+        <Route path="/group/:inviteCode/leaderboard" element={<GroupLeaderboard />} />
 
-      {/* Admin dashboard (password-gated via API) */}
-      <Route path="/admin" element={<Admin />} />
+        {/* Admin dashboard (password-gated via API) */}
+        <Route path="/admin" element={<Admin />} />
 
-      {/* Authenticated app shell (sidebar + header), wrapped in session context */}
-      <Route
-        element={
-          <SessionProvider>
-            <Layout />
-          </SessionProvider>
-        }
-      >
-        <Route path="/app" element={<Dashboard />} />
-        <Route path="/app/matches" element={<Matches />} />
-        <Route path="/app/predictions" element={<Predictions />} />
-        <Route path="/app/leaderboard" element={<Leaderboard />} />
-        {/* Competition lives inside the app shell so it has the sidebar */}
-        <Route path="/competition" element={<Competition />} />
-        <Route path="/competition/leaderboard" element={<CompetitionLeaderboard />} />
-      </Route>
+        {/* Authenticated app shell — Layout redirects to /login if not logged in */}
+        <Route element={<Layout />}>
+          <Route path="/app" element={<Dashboard />} />
+          <Route path="/app/matches" element={<Matches />} />
+          <Route path="/app/predictions" element={<Predictions />} />
+          <Route path="/app/leaderboard" element={<Leaderboard />} />
+          <Route path="/competition" element={<Competition />} />
+          <Route path="/competition/leaderboard" element={<CompetitionLeaderboard />} />
+        </Route>
 
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </SessionProvider>
   )
 }

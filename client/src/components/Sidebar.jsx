@@ -1,5 +1,6 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import Logo from './Logo.jsx'
+import { useSession } from '../lib/session.jsx'
 import {
   HomeIcon,
   BallIcon,
@@ -19,6 +20,14 @@ const links = [
 ]
 
 export default function Sidebar({ open, onClose }) {
+  const { logout } = useSession()
+  const navigate = useNavigate()
+
+  function handleLogout() {
+    logout()
+    navigate('/login')
+  }
+
   return (
     <>
       {/* Mobile overlay */}
@@ -80,15 +89,15 @@ export default function Sidebar({ open, onClose }) {
         </nav>
 
         <div className="border-t border-white/10 p-4">
-          <NavLink
-            to="/"
-            className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/5 hover:text-white cursor-pointer"
+          <button
+            onClick={handleLogout}
+            className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/5 hover:text-white cursor-pointer"
           >
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-white/5 text-slate-300">
               <LogoutIcon />
             </span>
             התנתקות
-          </NavLink>
+          </button>
         </div>
       </aside>
     </>

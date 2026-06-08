@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import rateLimit from 'express-rate-limit'
 import path from 'path'
+import authRouter from './routes/auth.js'
 import matchesRouter from './routes/matches.js'
 import leaderboardRouter from './routes/leaderboard.js'
 import predictionsRouter from './routes/predictions.js'
@@ -53,6 +54,7 @@ export function createApp() {
     })
   })
 
+  app.use('/api/auth', authRouter)
   app.use('/api/matches', matchesRouter)
   app.use('/api/leaderboard', leaderboardRouter)
   app.use('/api/predictions', predictionsRouter)

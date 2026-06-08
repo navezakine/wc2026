@@ -1,82 +1,93 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { api } from './api.js'
-import { demoGroups, demoMembers } from '../data/demo.js'
 
-// Holds the active group + "who am I" member, persisted to localStorage.
-// Falls back to demo group/members if the API is unreachable.
 const SessionContext = createContext(null)
 export const useSession = () => useContext(SessionContext)
 
+function readStorage() {
+  const memberId = localStorage.getItem('wc_member') || sessionStorage.getItem('wc_member')
+  const groupId = localStorage.getItem('wc_group') || sessionStorage.getItem('wc_group')
+  return { memberId, groupId }
+}
+
+function clearStorage() {
+  ;['wc_member', 'wc_group'].forEach((k) => {
+    localStorage.removeItem(k)
+    sessionStorage.removeItem(k)
+  })
+}
+
 export function SessionProvider({ children }) {
+  const saved = readStorage()
   const [groups, setGroups] = useState([])
   const [members, setMembers] = useState([])
-  const [groupId, setGroupId] = useState(() => localStorage.getItem('wc_group') || null)
-  const [memberId, setMemberId] = useState(() => localStorage.getItem('wc_member') || null)
-  const [loading, setLoading] = useState(true)
-  const [usingDemo, setUsingDemo] = useState(false)
+  const [groupId, setGroupId] = useState(saved.groupId)
+  const [memberId, setMemberId] = useState(saved.memberId)
+  const [loading, setLoading] = useState(!!saved.memberId)
 
-  // Load groups once
+  // Load groups only when logged in
   useEffect(() => {
+    if (!memberId) return
     let alive = true
     api
       .getGroups()
       .then((gs) => {
         if (!alive) return
-        const list = gs?.length ? gs : demoGroups
-        setUsingDemo(!gs?.length)
-        setGroups(list)
-        setGroupId((prev) => (list.find((g) => g.id === prev) ? prev : list[0]?.id) || null)
+        setGroups(gs || [])
+        setGroupId((prev) => (gs?.find((g) => g.id === prev) ? prev : gs?.[0]?.id) || null)
       })
-      .catch(() => {
-        if (!alive) return
-        setUsingDemo(true)
-        setGroups(demoGroups)
-        setGroupId(demoGroups[0].id)
-      })
+      .catch(() => alive && setGroups([]))
       .finally(() => alive && setLoading(false))
     return () => {
       alive = false
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Load members whenever the active group changes
+  // Load members whenever group changes
   useEffect(() => {
     if (!groupId) return
-    localStorage.setItem('wc_group', groupId)
     let alive = true
-    const loader = usingDemo ? Promise.resolve(demoMembers) : api.getMembers(groupId)
-    Promise.resolve(loader)
-      .then((ms) => {
-        if (!alive) return
-        const list = ms?.length ? ms : demoMembers
-        setMembers(list)
-        setMemberId((prev) => (list.find((m) => m.id === prev) ? prev : list[0]?.id) || null)
-      })
-      .catch(() => {
-        if (!alive) return
-        setMembers(demoMembers)
-        setMemberId(demoMembers[0].id)
-      })
+    api
+      .getMembers(groupId)
+      .then((ms) => alive && setMembers(ms || []))
+      .catch(() => alive && setMembers([]))
     return () => {
       alive = false
     }
-  }, [groupId, usingDemo])
+  }, [groupId])
 
-  useEffect(() => {
-    if (memberId) localStorage.setItem('wc_member', memberId)
-  }, [memberId])
+  const login = (memberData, remember = true) => {
+    const storage = remember ? localStorage : sessionStorage
+    storage.setItem('wc_member', memberData.id)
+    storage.setItem('wc_group', memberData.group_id)
+    setMemberId(memberData.id)
+    setGroupId(memberData.group_id)
+    setLoading(true)
+  }
+
+  const logout = () => {
+    clearStorage()
+    setMemberId(null)
+    setGroupId(null)
+    setGroups([])
+    setMembers([])
+    setLoading(false)
+  }
 
   const value = {
     groups,
     members,
     loading,
-    usingDemo,
+    usingDemo: false,
     groupId,
     memberId,
+    isLoggedIn: !!memberId,
     currentGroup: groups.find((g) => g.id === groupId) || null,
     currentMember: members.find((m) => m.id === memberId) || null,
     setGroupId,
     setMemberId,
+    login,
+    logout,
   }
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
