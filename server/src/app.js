@@ -1,7 +1,6 @@
 import express from 'express'
 import cors from 'cors'
 import rateLimit from 'express-rate-limit'
-import { fileURLToPath } from 'url'
 import path from 'path'
 import matchesRouter from './routes/matches.js'
 import leaderboardRouter from './routes/leaderboard.js'
@@ -11,8 +10,7 @@ import competitionRouter from './routes/competition.js'
 import adminRouter from './routes/admin.js'
 import { isSupabaseConfigured, usingServiceRole } from './config/supabase.js'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const clientDist = path.join(__dirname, '../../..', 'client/dist')
+const clientDist = path.join(process.cwd(), 'client/dist')
 
 export function createApp() {
   const app = express()
