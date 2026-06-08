@@ -107,6 +107,14 @@ export default function Sidebar({ open, onClose }) {
                       <span className="text-gold">+</span>
                       הצטרף לקבוצה נוספת
                     </Link>
+                    <Link
+                      to="/create"
+                      onClick={() => { setSwitcherOpen(false); onClose() }}
+                      className="flex items-center gap-2 border-t border-white/[0.06] px-4 py-3 text-sm font-bold text-gold transition-colors hover:bg-gold/10"
+                    >
+                      <span>✦</span>
+                      צור קבוצה חדשה
+                    </Link>
                   </div>
                 </div>
               )}
@@ -115,13 +123,23 @@ export default function Sidebar({ open, onClose }) {
             <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
               <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">קבוצה פעילה</p>
               <p className="mt-0.5 text-sm font-black text-gold truncate">{currentGroup?.name || '…'}</p>
-              <Link
-                to="/join"
-                onClick={onClose}
-                className="mt-1 block text-xs font-bold text-slate-500 transition-colors hover:text-gold"
-              >
-                + הצטרף לקבוצה נוספת
-              </Link>
+              <div className="mt-2 flex gap-3">
+                <Link
+                  to="/join"
+                  onClick={onClose}
+                  className="text-xs font-bold text-slate-500 transition-colors hover:text-gold"
+                >
+                  + הצטרף
+                </Link>
+                <span className="text-slate-700">·</span>
+                <Link
+                  to="/create"
+                  onClick={onClose}
+                  className="text-xs font-bold text-gold/70 transition-colors hover:text-gold"
+                >
+                  ✦ צור קבוצה
+                </Link>
+              </div>
             </div>
           )}
         </div>
