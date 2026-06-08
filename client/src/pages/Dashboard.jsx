@@ -18,10 +18,24 @@ export default function Dashboard() {
     if (typeof window !== 'undefined' && window.matchMedia('(display-mode: standalone)').matches) return false
     return !localStorage.getItem('wc_install_dismissed')
   })
+  const [installOs, setInstallOs] = useState('android')
 
   function dismissInstall() {
     localStorage.setItem('wc_install_dismissed', '1')
     setShowInstall(false)
+  }
+
+  const installSteps = {
+    android: [
+      { icon: '🌐', title: 'פתחו בדפדפן Chrome' },
+      { icon: '☰', title: 'לחצו על ⋮ בפינה הימנית', hint: 'שלוש הנקודות בפינה העליונה' },
+      { icon: '✅', title: 'בחרו "הוסף למסך הבית"' },
+    ],
+    ios: [
+      { icon: '🧭', title: 'פתחו בדפדפן Safari' },
+      { icon: '⬆️', title: 'לחצו על כפתור השיתוף', hint: 'הריבוע עם החץ, בתחתית' },
+      { icon: '✅', title: 'בחרו "הוסף למסך הבית"' },
+    ],
   }
 
   const matchesQ = useAsync(() => api.getMatches(), [], { fallback: demoMatches })
@@ -87,17 +101,47 @@ export default function Dashboard() {
           >
             ✕
           </button>
-          <div className="mb-3 flex items-center gap-2">
-            <span className="text-2xl">📲</span>
-            <h3 className="font-black text-white">הוסיפו את האפליקציה למסך הבית</h3>
+          <div className="mb-4 flex items-center gap-3">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-bl from-team to-gold text-xl">
+              📲
+            </span>
+            <div>
+              <h3 className="font-black text-white">הוסיפו לדף הבית שלכם</h3>
+              <p className="text-xs text-slate-400">גישה מהירה כמו אפליקציה</p>
+            </div>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 text-sm text-slate-300">
-            <div className="rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3">
-              <span className="font-bold text-white">🤖 אנדרואיד:</span> Chrome ← ⋮ ← <strong className="text-white">"הוסף למסך הבית"</strong>
-            </div>
-            <div className="rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3">
-              <span className="font-bold text-white">🍎 iPhone:</span> Safari ← כפתור שיתוף ⎙ ← <strong className="text-white">"הוסף למסך הבית"</strong>
-            </div>
+
+          <div className="mb-4 flex gap-2 rounded-xl bg-white/5 p-1">
+            {[['android', '🤖', 'אנדרואיד'], ['ios', '🍎', 'iPhone']].map(([id, emoji, label]) => (
+              <button
+                key={id}
+                onClick={() => setInstallOs(id)}
+                className={`flex-1 rounded-lg py-2 text-xs font-bold transition-all duration-200 ${
+                  installOs === id ? 'bg-gold text-night shadow' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                {emoji} {label}
+              </button>
+            ))}
+          </div>
+
+          <div key={installOs} className="space-y-2">
+            {installSteps[installOs].map((step, i) => (
+              <div
+                key={i}
+                className="animate-fade-up flex items-center gap-3 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2.5"
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <span className="num grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gold/15 text-xs font-black text-gold">
+                  {i + 1}
+                </span>
+                <span className="text-base leading-none">{step.icon}</span>
+                <div>
+                  <span className="text-sm font-bold text-white">{step.title}</span>
+                  {step.hint && <div className="text-xs text-slate-500">{step.hint}</div>}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

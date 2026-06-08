@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Logo from '../components/Logo.jsx'
 import Flag from '../components/Flag.jsx'
@@ -26,6 +27,69 @@ const features = [
     desc: 'ניחושים מדויקים ברצף מזכים אתכם בבונוסים ובתואר הכבוד בקבוצה.',
   },
 ]
+
+const INSTALL_STEPS = {
+  android: [
+    { icon: '🌐', title: 'פתחו בדפדפן Chrome' },
+    { icon: '☰', title: 'לחצו על התפריט', hint: 'שלוש הנקודות ⋮ בפינה הימנית העליונה' },
+    { icon: '✅', title: 'בחרו "הוסף למסך הבית" ואשרו' },
+  ],
+  ios: [
+    { icon: '🧭', title: 'פתחו בדפדפן Safari' },
+    { icon: '⬆️', title: 'לחצו על כפתור השיתוף', hint: 'הריבוע עם החץ בתחתית המסך' },
+    { icon: '✅', title: 'בחרו "הוסף למסך הבית" ואשרו' },
+  ],
+}
+
+function InstallGuide() {
+  const [os, setOs] = useState('android')
+  return (
+    <section className="mx-auto max-w-xl px-4 pb-8 sm:px-6">
+      <div className="glass-card p-6 sm:p-8">
+        <div className="mb-6 text-center">
+          <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-bl from-team to-gold text-2xl shadow-glow">
+            📲
+          </div>
+          <h2 className="text-xl font-black text-white">הוסיפו לדף הבית שלכם</h2>
+          <p className="mt-1 text-sm text-slate-400">גישה מהירה כמו אפליקציה — בלי חנות</p>
+        </div>
+
+        <div className="mb-5 flex gap-2 rounded-xl bg-white/5 p-1">
+          {[['android', '🤖', 'אנדרואיד'], ['ios', '🍎', 'iPhone']].map(([id, emoji, label]) => (
+            <button
+              key={id}
+              onClick={() => setOs(id)}
+              className={`flex-1 rounded-lg py-2.5 text-sm font-bold transition-all duration-200 ${
+                os === id ? 'bg-gold text-night shadow' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              {emoji} {label}
+            </button>
+          ))}
+        </div>
+
+        <div key={os} className="space-y-3">
+          {INSTALL_STEPS[os].map((step, i) => (
+            <div
+              key={i}
+              className="animate-fade-up flex items-center gap-4 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3"
+              style={{ animationDelay: `${i * 90}ms` }}
+            >
+              <span className="num grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gold/15 text-sm font-black text-gold">
+                {i + 1}
+              </span>
+              <span className="text-xl leading-none">{step.icon}</span>
+              <div>
+                <div className="text-sm font-bold text-white">{step.title}</div>
+                {step.hint && <div className="mt-0.5 text-xs text-slate-500">{step.hint}</div>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
 
 export default function Home() {
   return (
@@ -145,40 +209,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Install CTA */}
-      <section className="mx-auto max-w-6xl px-4 pb-4 sm:px-6">
-        <div className="glass-card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <span className="text-3xl">📲</span>
-            <h2 className="mt-2 text-2xl font-black text-white">הוסיפו את האפליקציה למסך הבית</h2>
-            <p className="mt-2 text-sm text-slate-300">גישה מהירה בלחיצה אחת — בלי לפתוח דפדפן</p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
-              <div className="mb-3 flex items-center gap-2">
-                <span className="text-xl">🤖</span>
-                <span className="font-bold text-white">אנדרואיד (Chrome)</span>
-              </div>
-              <ol className="space-y-2 text-sm text-slate-300">
-                <li className="flex gap-2"><span className="num font-black text-gold">1.</span> פתחו את האתר בדפדפן Chrome</li>
-                <li className="flex gap-2"><span className="num font-black text-gold">2.</span> לחצו על ⋮ (שלוש נקודות) בפינה הימנית</li>
-                <li className="flex gap-2"><span className="num font-black text-gold">3.</span> בחרו <strong className="text-white">"הוסף למסך הבית"</strong></li>
-              </ol>
-            </div>
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
-              <div className="mb-3 flex items-center gap-2">
-                <span className="text-xl">🍎</span>
-                <span className="font-bold text-white">iPhone (Safari)</span>
-              </div>
-              <ol className="space-y-2 text-sm text-slate-300">
-                <li className="flex gap-2"><span className="num font-black text-gold">1.</span> פתחו את האתר בדפדפן Safari</li>
-                <li className="flex gap-2"><span className="num font-black text-gold">2.</span> לחצו על כפתור השיתוף <strong className="text-white">⎙</strong> (בתחתית המסך)</li>
-                <li className="flex gap-2"><span className="num font-black text-gold">3.</span> בחרו <strong className="text-white">"הוסף למסך הבית"</strong></li>
-              </ol>
-            </div>
-          </div>
-        </div>
-      </section>
+      <InstallGuide />
 
       {/* How it works / scoring */}
       <section id="how" className="mx-auto max-w-6xl scroll-mt-8 px-4 py-12 sm:px-6">
