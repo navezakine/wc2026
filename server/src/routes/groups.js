@@ -2,7 +2,7 @@ import { Router } from 'express'
 import QRCode from 'qrcode'
 import { supabase, usingServiceRole } from '../config/supabase.js'
 import { awardReferral, applyReferral } from '../services/referrals.js'
-import { APP_BASE_URL } from '../lib/constants.js'
+import { APP_BASE_URL, FREE_GROUP_LIMIT } from '../lib/constants.js'
 
 const router = Router()
 
@@ -56,6 +56,7 @@ router.get('/by-invite/:code', async (req, res, next) => {
       invite_code: data.invite_code,
       tier: data.tier,
       member_count: data.members?.[0]?.count ?? 0,
+      free_limit: FREE_GROUP_LIMIT,
     })
   } catch (err) {
     next(err)
@@ -227,10 +228,20 @@ router.post('/join', async (req, res, next) => {
 
     const { data: group } = await supabase
       .from('groups')
-      .select('id, invite_code, name, creator_member_id, milestone_awarded')
+      .select('id, invite_code, name, tier, creator_member_id, milestone_awarded')
       .eq('invite_code', inviteCode)
       .maybeSingle()
     if (!group) return res.status(404).send('הקבוצה לא נמצאה')
+
+    if (group.tier === 'free') {
+      const { count: currentCount } = await supabase
+        .from('members')
+        .select('*', { count: 'exact', head: true })
+        .eq('group_id', group.id)
+      if ((currentCount ?? 0) >= FREE_GROUP_LIMIT) {
+        return res.status(403).send('GROUP_FULL')
+      }
+    }
 
     const { data: member, error } = await supabase
       .from('members')
@@ -261,7 +272,7 @@ router.post('/join', async (req, res, next) => {
       member: { id: member.id, referral_code: member.referral_code },
       group: { id: group.id, invite_code: group.invite_code, name: group.name },
       memberCount,
-      upgradePrompt: memberCount >= 8,
+      upgradePrompt: memberCount >= FREE_GROUP_LIMIT - 1,
       referrerAwarded: refResult.awarded,
       milestoneAwarded,
     })

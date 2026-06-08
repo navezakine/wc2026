@@ -26,10 +26,16 @@ export default function Join() {
   const [remember, setRemember] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [groupFull, setGroupFull] = useState(false)
 
   useEffect(() => {
     api.getGroupByInvite(inviteCode)
-      .then(setGroup)
+      .then((g) => {
+        setGroup(g)
+        if (g.tier === 'free' && g.member_count >= (g.free_limit ?? 6)) {
+          setGroupFull(true)
+        }
+      })
       .catch(() => setNotFound(true))
   }, [inviteCode])
 
@@ -44,7 +50,11 @@ export default function Join() {
       addMembership({ memberId: res.member.id, groupId: res.group.id }, remember)
       navigate('/app', { replace: true })
     } catch (err) {
-      setError(err.message || 'שגיאה בהצטרפות')
+      if (err.message === 'GROUP_FULL') {
+        setGroupFull(true)
+      } else {
+        setError(err.message || 'שגיאה בהצטרפות')
+      }
     } finally {
       setLoading(false)
     }
@@ -66,6 +76,24 @@ export default function Join() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (groupFull) {
+    return (
+      <div className="min-h-screen bg-night bg-stadium-mesh flex flex-col items-center justify-center px-4">
+        <div className="w-full max-w-sm glass-card p-8 text-center">
+          <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-gold/15 text-gold">
+            <UsersIcon width={28} height={28} />
+          </div>
+          <p className="text-lg font-extrabold text-white">הקבוצה מלאה</p>
+          <p className="mt-2 text-sm text-slate-400">
+            הקבוצה <span className="font-bold text-white">{group?.name}</span> הגיעה למגבלת החברים החינמית ({group?.free_limit ?? 6} חברים).
+          </p>
+          <p className="mt-2 text-sm text-slate-400">יוצר הקבוצה צריך לשדרג לפרימיום כדי להוסיף עוד חברים.</p>
+          <Link to="/" className="btn-gold mt-5 inline-block px-6 py-2.5">חזרה לדף הבית</Link>
+        </div>
+      </div>
+    )
   }
 
   if (notFound) {

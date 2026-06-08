@@ -8,7 +8,9 @@ export default function UpgradePrompt() {
   const [msg, setMsg] = useState('')
   if (!currentGroup || currentGroup.tier === 'paid') return null
 
-  const big = (currentGroup.member_count ?? 0) >= 8
+  const FREE_LIMIT = 6
+  const memberCount = currentGroup.member_count ?? 0
+  const atCap = memberCount >= FREE_LIMIT
 
   return (
     <div className="glass-card overflow-hidden border-gold/30 bg-gradient-to-l from-gold/10 to-transparent p-5">
@@ -18,10 +20,12 @@ export default function UpgradePrompt() {
         </span>
         <div className="flex-1">
           <h3 className="font-extrabold text-white">
-            {big ? 'הקבוצה שלך גדלה! שדרג ב-29 שקל כדי להוסיף עוד חברים' : 'שדרג לפרימיום'}
+            {atCap ? `הגעתם ל-${FREE_LIMIT} חברים — הקבוצה נעולה` : 'שדרגו לפרימיום'}
           </h3>
           <p className="mt-1 text-sm text-slate-300">
-            חברים ללא הגבלה · ניחוש תוצאה + מלך השערים · היסטוריית טבלה מלאה · שם וקבוצה בהתאמה אישית
+            {atCap
+              ? `חברים חדשים לא יוכלו להצטרף. שדרגו ב-29 ₪ לחברים ללא הגבלה.`
+              : `שדרגו ב-29 ₪ לחברים ללא הגבלה · היסטוריית טבלה מלאה`}
           </p>
           <button onClick={() => setMsg('תשלום יהיה זמין בקרוב — נעדכן אותך!')} className="btn-gold mt-3">
             שדרג ב-29 ₪
