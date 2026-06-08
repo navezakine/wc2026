@@ -233,7 +233,7 @@ export default function Competition() {
         <TrophyIcon width={48} height={48} className="mx-auto text-[#f5c518]" />
         <h1 className="mt-3 text-2xl font-black text-white">תחרות המונדיאל — הזוכה מקבל פרס!</h1>
         <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#f5c518] px-5 py-2 text-base font-extrabold text-[#0f241a]">
-          🎁 פרס: {info?.prize || 'כרטיס מתנה 500 שקל לאמזון'}
+          🎁 {info?.prize || 'פרס מיוחד לזוכה'}
         </div>
       </div>
 
