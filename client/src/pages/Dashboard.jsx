@@ -64,6 +64,7 @@ export default function Dashboard() {
 
   if (matchesQ.loading || lbQ.loading) return <Spinner />
 
+
   const matches = matchesQ.data || []
   const lb = [...(lbQ.data || [])].sort((a, b) => a.rank - b.rank)
   const predByMatch = Object.fromEntries((predsQ.data || []).map((p) => [p.match_id, p]))
@@ -157,6 +158,11 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+
+      {/* TEMP DEBUG — remove after iPhone diagnosis */}
+      <div className="glass-card p-3 text-xs text-slate-400 font-mono">
+        push.supported={String(push.supported)} | permission={push.permission} | subscribed={String(push.subscribed)} | dismissed={String(pushDismissed)}
+      </div>
 
       {showPushBanner && (
         <div className="glass-card animate-fade-up relative p-5">
