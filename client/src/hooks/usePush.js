@@ -25,7 +25,11 @@ export function usePush(memberId) {
   }, [memberId])
 
   async function subscribe() {
-    if (!memberId || !VAPID_PUBLIC_KEY || !('serviceWorker' in navigator)) return
+    if (!memberId || !('serviceWorker' in navigator)) return
+    if (!VAPID_PUBLIC_KEY) {
+      console.warn('[push] VITE_VAPID_PUBLIC_KEY not set — cannot subscribe')
+      return
+    }
     try {
       const reg = await navigator.serviceWorker.ready
       const sub = await reg.pushManager.subscribe({
@@ -55,8 +59,7 @@ export function usePush(memberId) {
   const supported =
     typeof Notification !== 'undefined' &&
     'serviceWorker' in navigator &&
-    'PushManager' in window &&
-    !!VAPID_PUBLIC_KEY
+    'PushManager' in window
 
   return { supported, permission, subscribed, subscribe, unsubscribe }
 }
