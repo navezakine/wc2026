@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSession } from '../lib/session.jsx'
+import { usePush } from '../hooks/usePush.js'
 import { useAsync } from '../lib/useAsync.js'
 import { api } from '../lib/api.js'
 import { demoMatches, demoLeaderboard } from '../data/demo.js'
@@ -14,6 +15,15 @@ import { TrophyIcon, TargetIcon, MedalIcon, BallIcon } from '../lib/icons.jsx'
 export default function Dashboard() {
   const { currentMember, currentGroup, groupId, memberId, usingDemo } = useSession()
   const [toast, setToast] = useState(null)
+  const push = usePush(memberId)
+  const [pushDismissed, setPushDismissed] = useState(
+    () => !!localStorage.getItem('wc_push_dismissed'),
+  )
+  function dismissPush() {
+    localStorage.setItem('wc_push_dismissed', '1')
+    setPushDismissed(true)
+  }
+  const showPushBanner = push.supported && push.permission !== 'denied' && !push.subscribed && !pushDismissed
   const [showInstall, setShowInstall] = useState(() => {
     if (typeof window !== 'undefined' && window.matchMedia('(display-mode: standalone)').matches) return false
     return !localStorage.getItem('wc_install_dismissed')
@@ -143,6 +153,33 @@ export default function Dashboard() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {showPushBanner && (
+        <div className="glass-card animate-fade-up relative p-5">
+          <button
+            onClick={dismissPush}
+            className="absolute left-3 top-3 grid h-7 w-7 place-items-center rounded-full text-slate-400 hover:bg-white/10 hover:text-white"
+            aria-label="סגור"
+          >
+            ✕
+          </button>
+          <div className="mb-4 flex items-center gap-3">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-bl from-team to-gold text-xl">
+              🔔
+            </span>
+            <div>
+              <h3 className="font-black text-white">קבלו תזכורות לניחוש</h3>
+              <p className="text-xs text-slate-400">12 ו-5 שעות לפני כל משחק — רק אם עוד לא ניחשתם</p>
+            </div>
+          </div>
+          <button
+            onClick={async () => { await push.subscribe(); dismissPush() }}
+            className="w-full rounded-xl bg-gradient-to-l from-gold to-gold-light py-2.5 text-sm font-black text-night transition hover:from-gold-dark hover:to-gold"
+          >
+            כן, שלחו לי תזכורות 🔔
+          </button>
         </div>
       )}
 

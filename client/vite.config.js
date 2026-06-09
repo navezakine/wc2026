@@ -6,6 +6,9 @@ export default defineConfig(async ({ mode }) => {
   const plugins = [
     react(),
     VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.js',
       registerType: 'autoUpdate',
       manifest: {
         name: 'WC 2026 ניחושים',
@@ -22,7 +25,7 @@ export default defineConfig(async ({ mode }) => {
           { src: '/logo.png', sizes: '512x512', type: 'image/png' },
         ],
       },
-      workbox: {
+      injectManifest: {
         globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
       },
     }),

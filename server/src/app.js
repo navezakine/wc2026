@@ -9,6 +9,7 @@ import predictionsRouter from './routes/predictions.js'
 import groupsRouter from './routes/groups.js'
 import competitionRouter from './routes/competition.js'
 import adminRouter from './routes/admin.js'
+import pushRouter from './routes/push.js'
 import { isSupabaseConfigured, usingServiceRole } from './config/supabase.js'
 
 const clientDist = path.join(process.cwd(), 'client/dist')
@@ -61,6 +62,7 @@ export function createApp() {
   app.use('/api/groups', groupsRouter)
   app.use('/api/competition', competitionRouter)
   app.use('/api/admin', adminRouter)
+  app.use('/api/push', pushRouter)
 
   // 404 for unknown API routes
   app.use('/api', (_req, res) => res.status(404).send('הנתיב לא נמצא'))

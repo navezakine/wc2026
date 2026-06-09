@@ -37,6 +37,12 @@ export const api = {
   enterCompetition: (payload) =>
     request('/competition/enter', { method: 'POST', body: JSON.stringify(payload) }),
 
+  // Push notifications
+  subscribePush: (payload) =>
+    request('/push/subscribe', { method: 'POST', body: JSON.stringify(payload) }),
+  unsubscribePush: (payload) =>
+    request('/push/subscribe', { method: 'DELETE', body: JSON.stringify(payload) }),
+
   // Auth
   login: (phone) => request('/auth/login', { method: 'POST', body: JSON.stringify({ phone }) }),
 
