@@ -25,13 +25,25 @@ export function usePush(memberId) {
   }, [memberId])
 
   async function subscribe() {
-    if (!memberId || !('serviceWorker' in navigator)) return
+    if (!memberId || !('serviceWorker' in navigator)) return false
     if (!VAPID_PUBLIC_KEY) {
-      console.warn('[push] VITE_VAPID_PUBLIC_KEY not set — cannot subscribe')
-      return
+      console.warn('[push] VITE_VAPID_PUBLIC_KEY not set')
+      return false
     }
     try {
-      const reg = await navigator.serviceWorker.ready
+      // Request permission explicitly first — this triggers the browser dialog
+      const perm = await Notification.requestPermission()
+      setPermission(perm)
+      if (perm !== 'granted') return false
+
+      // Wait up to 8s for an active service worker
+      const reg = await Promise.race([
+        navigator.serviceWorker.ready,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('service worker timeout')), 8000),
+        ),
+      ])
+
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
@@ -39,9 +51,11 @@ export function usePush(memberId) {
       const { endpoint, keys } = sub.toJSON()
       await api.subscribePush({ memberId, endpoint, p256dh: keys.p256dh, auth: keys.auth })
       setSubscribed(true)
-      setPermission('granted')
-    } catch {
+      return true
+    } catch (err) {
+      console.error('[push] subscription failed:', err.message)
       setPermission(Notification.permission)
+      return false
     }
   }
 

@@ -19,6 +19,8 @@ export default function Dashboard() {
   const [pushDismissed, setPushDismissed] = useState(
     () => !!localStorage.getItem('wc_push_dismissed'),
   )
+  const [pushLoading, setPushLoading] = useState(false)
+  const [pushError, setPushError] = useState(false)
   function dismissPush() {
     localStorage.setItem('wc_push_dismissed', '1')
     setPushDismissed(true)
@@ -174,11 +176,21 @@ export default function Dashboard() {
               <p className="text-xs text-slate-400">12 ו-5 שעות לפני כל משחק — רק אם עוד לא ניחשתם</p>
             </div>
           </div>
+          {pushError && (
+            <p className="mb-2 text-center text-xs text-red-400">לא הצלחנו להפעיל התראות — נסו שוב מהגדרות הדפדפן</p>
+          )}
           <button
-            onClick={async () => { await push.subscribe(); dismissPush() }}
-            className="w-full rounded-xl bg-gradient-to-l from-gold to-gold-light py-2.5 text-sm font-black text-night transition hover:from-gold-dark hover:to-gold"
+            disabled={pushLoading}
+            onClick={async () => {
+              setPushLoading(true)
+              setPushError(false)
+              const ok = await push.subscribe()
+              setPushLoading(false)
+              if (ok) { dismissPush() } else { setPushError(true) }
+            }}
+            className="w-full rounded-xl bg-gradient-to-l from-gold to-gold-light py-2.5 text-sm font-black text-night transition hover:from-gold-dark hover:to-gold disabled:opacity-60"
           >
-            כן, שלחו לי תזכורות 🔔
+            {pushLoading ? 'מפעיל...' : 'כן, שלחו לי תזכורות 🔔'}
           </button>
         </div>
       )}
