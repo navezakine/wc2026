@@ -17,12 +17,12 @@ export default function Dashboard() {
   const [toast, setToast] = useState(null)
   const push = usePush(memberId)
   const [pushDismissed, setPushDismissed] = useState(
-    () => !!localStorage.getItem('wc_push_dismissed'),
+    () => !!localStorage.getItem('wc_push_dismissed_v2'),
   )
   const [pushLoading, setPushLoading] = useState(false)
   const [pushError, setPushError] = useState(false)
   function dismissPush() {
-    localStorage.setItem('wc_push_dismissed', '1')
+    localStorage.setItem('wc_push_dismissed_v2', '1')
     setPushDismissed(true)
   }
   const showPushBanner = push.supported && push.permission !== 'denied' && !push.subscribed && !pushDismissed
