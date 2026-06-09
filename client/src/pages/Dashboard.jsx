@@ -159,11 +159,6 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* TEMP DEBUG — remove after iPhone diagnosis */}
-      <div className="glass-card p-3 text-xs text-slate-400 font-mono">
-        push.supported={String(push.supported)} | permission={push.permission} | subscribed={String(push.subscribed)} | dismissed={String(pushDismissed)}
-      </div>
-
       {showPushBanner && (
         <div className="glass-card animate-fade-up relative p-5">
           <button
